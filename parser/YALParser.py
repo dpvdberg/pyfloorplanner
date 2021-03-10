@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from lark import Lark
 from lark import Transformer
-from data.module import *
+from data.Module import *
 
 
 # Intermediate module specification class
