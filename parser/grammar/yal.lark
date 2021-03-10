@@ -1,0 +1,45 @@
+yal: module+
+module: "MODULE" CNAME TERMINATOR modulespec "ENDMODULE" TERMINATOR
+modulespec: type dimensions iolist network? placement? criticalnets?
+
+// TYPE
+type: "TYPE" TYPENAME TERMINATOR
+TYPENAME: "STANDARD" | "PAD" | "GENERAL" | "PARENT" | "FEEDTHROUGH"
+
+// DIMENSIONS
+dimensions: "DIMENSIONS" SIGNED_NUMBER+ TERMINATOR
+
+// IOLIST
+iolist: "IOLIST" TERMINATOR ioline+ "ENDIOLIST" TERMINATOR
+ioline: CNAME TERMINALTYPE ((SIGNED_NUMBER | SIDE)? (SIGNED_NUMBER (SIGNED_NUMBER LAYER)?)?)? ("CURRENT" SIGNED_NUMBER)? ("VOLTAGE" SIGNED_NUMBER)? TERMINATOR
+TERMINALTYPE: "I" | "O" | "B" | "PI" | "PO" | "PB" | "F" | "PWR" |  "GND"
+SIDE: "BOTTOM" | "RIGHT" | "TOP" | "LEFT"
+LAYER: "PDIFF" | "NDIFF" | "POLY" | "METAL1" | "METAL2"
+
+// NETWORK
+network: "NETWORK" TERMINATOR networkline+ "ENDNETWORK" TERMINATOR
+networkline: CNAME+ TERMINATOR
+
+// PLACEMENT
+placement: "PLACEMENT" TERMINATOR placementline+ "ENDPLACEMENT" TERMINATOR
+placementline: CNAME SIGNED_NUMBER SIGNED_NUMBER REFLECTION? ROTATION TERMINATOR
+REFLECTION: "RFLNONE" | "RFLY"
+ROTATION: "ROT" ("0" | "90" | "180" | "270")
+
+// CRITICALNETS
+criticalnets: "CRITICALNETS" TERMINATOR criticalnetline "ENDCRITICALNETS" TERMINATOR
+criticalnetline: CNAME SIGNED_NUMBER TERMINATOR
+
+TERMINATOR : ";"
+
+COMMENT: "/*" /(.|\n)+/ "*/"
+%ignore COMMENT
+
+%import common.WS
+%ignore WS
+%ignore TERMINATOR
+
+%import common.SIGNED_NUMBER
+%import common.WORD
+%import common.LETTER
+%import common.CNAME
