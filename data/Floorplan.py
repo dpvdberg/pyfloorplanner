@@ -24,15 +24,15 @@ class Floorplan:
 
         return Interval(min_ar, max_ar)
 
-    def max_dimension(self):
-        max_dimension = 0
+    def max_dimension(self) -> Dimensions:
+        max_x, max_y = 0, 0
         for m in self.modules:
-            max_dimension = max(max_dimension, m.position.x + m.dimensions.width)
-            max_dimension = max(max_dimension, m.position.y + m.dimensions.height)
+            max_x = max(max_x, m.position.x + m.dimensions.width)
+            max_y = max(max_y, m.position.y + m.dimensions.height)
 
-        return max_dimension
+        return Dimensions(max_x, max_y)
 
-    def plot(self, draw_names=False, name_size=6):
+    def plot(self, highlight_empty_space=False, draw_names=False, name_size=6):
         fig = plt.figure()
         ax = fig.add_subplot(111, aspect='equal')
         patches = []
@@ -44,13 +44,18 @@ class Floorplan:
                 ax.annotate(m.name, m.position + 0.5 * m.dimensions.to_vector(), color='w', weight='bold',
                             fontsize=name_size, ha='center', va='center')
 
-        max_dimension = self.max_dimension()
-        plt.xlim([0, max_dimension])
-        plt.ylim([0, max_dimension])
+        md = self.max_dimension()
+        plt.xlim([0, md.width])
+        plt.ylim([0, md.height])
 
-        pc = PatchCollection(patches, cmap=cm.get_cmap('viridis'), edgecolor='black')
-        # assign random values for cmap coloring
-        pc.set_array(np.random.random(len(self.modules)))
+        pc = PatchCollection(patches, edgecolor='black')
+
+        if highlight_empty_space:
+            ax.set_facecolor((1.0, 0.47, 0.42))
+        else:
+            pc.set_cmap(cm.get_cmap('viridis'))
+            # assign random values for cmap coloring
+            pc.set_array(np.random.random(len(self.modules)))
 
         ax.add_collection(pc)
         plt.show()

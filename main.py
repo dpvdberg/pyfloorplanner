@@ -7,3 +7,4 @@ fp = y.parse(open('datasets/MCNC/ami33.yal', 'r').read())
 
 fp.align_horizontally()
 fp.plot(draw_names=True)
+fp.plot(highlight_empty_space=True)
