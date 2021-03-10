@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from lark import Lark
 from lark import Transformer
+from data.Floorplan import Floorplan
 from data.Module import *
 
 

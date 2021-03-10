@@ -18,5 +18,3 @@ class Floorplan:
 
     def __str__(self):
         return "Floorplan: \n" + "\n".join([str(m) for m in self.modules])
-
-    d
