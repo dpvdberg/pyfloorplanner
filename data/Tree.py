@@ -1,21 +1,16 @@
+import logging
 import random
 
+from typing import List
+from matplotlib import pyplot as plt
 from data.Contour import Contour
-from data.Module import Module
 from data.TreeAction import *
 
-
-class Node:
-    def __init__(self, value: Module, left: 'Node', right: 'Node', parent: 'Node'):
-        self.value = value
-        self.left = left
-        self.right = right
-        self.parent = parent
-        self.rotated = False
+log = logging.getLogger("pyfloorplanner")
 
 class Tree:
-    def __init__(self, root: Module, nodes: list[Module]):
-        #TODO: build tree from nodes
+    def __init__(self, root: Node, nodes: List[Node]):
+        # TODO: build tree from nodes
         self.nodes = nodes
         self.root = root
 
@@ -28,10 +23,9 @@ class Tree:
         pass
 
     def rotate(self):
-        #TODO: fix that some nodes cannot be rotated
+        # TODO: fix that some nodes cannot be rotated
         node = random.choice(self.nodes)
-        self.lastAction = Rotate(self, node)
-        self.lastAction.do()
+        self.apply(Rotate(self, node))
 
     def move(self):
         pass
@@ -42,8 +36,8 @@ class Tree:
     def remove_soft(self):
         pass
 
-    def delete(self, node):
-        pass
+    def remove(self, node):
+        self.apply(Remove(self, node))
 
     def insert(self, node, parent):
         pass
@@ -57,3 +51,33 @@ class Tree:
 
     def feasible(self):
         return True
+
+    def apply(self, action: TreeAction):
+        self.lastAction = action
+
+        log.debug(f"Before action: {action.__class__.__name__}")
+        log.debug(self.to_text())
+
+        action.do()
+
+        log.debug(f"After action: {action.__class__.__name__}")
+        log.debug(self.to_text())
+
+    def to_text(self):
+        # use binarytree package to allow easy printing
+        from binarytree import Node as BNode
+
+        bnodes = {n: BNode(n.id) for n in self.nodes}
+        bnodes[None] = None
+
+        # copy hierarchy
+        for node, bnode in bnodes.items():
+            if node is None:
+                continue
+            bnode.left = bnodes[node.left]
+            bnode.right = bnodes[node.right]
+
+        return str(bnodes[self.root])
+
+    def print(self):
+        print(self.to_text())
