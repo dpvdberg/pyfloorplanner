@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from typing import List
+
 from lark import Lark
 from lark import Transformer
 from data.Floorplan import Floorplan
@@ -14,7 +16,7 @@ class ModuleSpec:
 
 class YALTransformer(Transformer):
     def yal(self, yal):
-        return Floorplan(yal)
+        return yal
 
     def module(self, module_elements):
         # Filter none values
@@ -54,8 +56,8 @@ class YALTransformer(Transformer):
 
 class YALParser:
     def __init__(self):
-        self.yal_raw = open('parser/grammar/yal.lark', 'r').read()
+        self.yal_raw = open('parsers/grammar/yal.lark', 'r').read()
         self.yal = Lark(self.yal_raw, start='yal')
 
-    def parse(self, yal) -> Floorplan:
+    def parse(self, yal) -> List[Module]:
         return YALTransformer().transform(self.yal.parse(yal))

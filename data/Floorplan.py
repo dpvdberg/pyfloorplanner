@@ -3,6 +3,7 @@ import math
 import matplotlib
 import numpy as np
 from matplotlib.collections import PatchCollection
+from typing import List
 
 from data.Module import *
 from matplotlib import pyplot as plt, cm
@@ -10,8 +11,8 @@ from matplotlib.patches import Rectangle
 
 
 class Floorplan:
-    def __init__(self, modules: list[Module]):
-        self.modules: list[Module] = modules
+    def __init__(self, modules: List[Module]):
+        self.modules: List[Module] = modules
         self.aspect_ratio: Interval = self.compute_aspect_ratio_interval()
 
     def compute_aspect_ratio_interval(self) -> Interval:

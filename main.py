@@ -1,9 +1,15 @@
-from lark import Lark
+import random
 
-from parser.YALParser import YALParser
+from data.Floorplan import Floorplan
+from data.TreeBuilder import TreeBuilder
+from parsers.YALParser import YALParser
 
 y = YALParser()
-fp = y.parse(open('datasets/MCNC/ami33.yal', 'r').read())
+modules = y.parse(open('datasets/MCNC/ami33.yal', 'r').read())
+
+TreeBuilder.from_modules(modules, seed=42).print()
+
+fp = Floorplan(modules)
 
 fp.align_horizontally()
 fp.plot(draw_names=True)
