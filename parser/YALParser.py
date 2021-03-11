@@ -57,5 +57,5 @@ class YALParser:
         self.yal_raw = open('parser/grammar/yal.lark', 'r').read()
         self.yal = Lark(self.yal_raw, start='yal')
 
-    def parse(self, yal):
+    def parse(self, yal) -> Floorplan:
         return YALTransformer().transform(self.yal.parse(yal))

@@ -3,47 +3,8 @@ from lark import Lark
 from parser.YALParser import YALParser
 
 y = YALParser()
-modules = y.parse(r"""MODULE bk1;
- TYPE GENERAL;
- DIMENSIONS 336 0 336 133 0 133 0 0;
- IOLIST;
-  P_0 PWR 175 0 1 METAL2 CURRENT 0.003 VOLTAGE 2.000;
-  P_1 PWR 105 0 1 METAL2 CURRENT 0.003 VOLTAGE 2.000;
-  P_2 B 336 14 1 METAL2;
-  P_3 B 0 14 1 METAL2;
-  P_4 B 336 7 1 METAL2;
-  P_5 B 0 7 1 METAL2;
-  P_6 B 336 105 1 METAL2;
-  P_7 B 0 105 1 METAL2;
-  P_8 B 336 112 1 METAL2;
-  P_9 B 0 112 1 METAL2;
-  P_10 B 112 133 1 METAL2;
-  P_11 B 0 42 1 METAL2;
-  P_12 B 273 133 1 METAL2;
- ENDIOLIST;
-ENDMODULE;
-MODULE bk10a;
- TYPE GENERAL;
- DIMENSIONS 378 0 378 119 0 119 0 0;
- IOLIST;
-  P_0 PWR 280 0 1 METAL2 CURRENT 0.004 VOLTAGE 1.900;
-  P_1 PWR 70 0 1 METAL2 CURRENT 0.004 VOLTAGE 1.900;
-  P_2 B 378 7 1 METAL2;
-  P_3 B 0 7 1 METAL2;
-  P_4 B 378 84 1 METAL2;
-  P_5 B 0 14 1 METAL2;
-  P_6 B 14 119 1 METAL2;
-  P_7 B 378 105 1 METAL2;
-  P_8 B 0 105 1 METAL2;
-  P_9 B 378 112 1 METAL2;
-  P_10 B 0 112 1 METAL2;
-  P_11 B 0 84 1 METAL2;
-  P_12 B 0 77 1 METAL2;
-  P_13 B 0 42 1 METAL2;
-  P_14 B 0 35 1 METAL2;
-  P_15 B 0 70 1 METAL2;
- ENDIOLIST;
-ENDMODULE;""")
+fp = y.parse(open('datasets/MCNC/ami33.yal', 'r').read())
 
-print(modules)
-
+fp.align_horizontally()
+fp.plot(draw_names=True)
+fp.plot(highlight_empty_space=True)
