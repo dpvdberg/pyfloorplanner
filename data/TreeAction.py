@@ -1,6 +1,6 @@
 import logging
 import queue
-import random
+from random import random
 from typing import Optional
 
 from data.Node import Node

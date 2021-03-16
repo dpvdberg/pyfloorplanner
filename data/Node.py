@@ -4,6 +4,12 @@ from data.Module import Module
 
 node_id = 0
 
+
+def reset_node_id():
+    global node_id
+    node_id = 0
+
+
 class Node:
     def __init__(self, value: Module,
                  left: Optional['Node'] = None,
