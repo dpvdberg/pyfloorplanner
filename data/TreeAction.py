@@ -53,6 +53,7 @@ class Move(TreeAction):
         self.insert.revert()
         self.remove.revert()
 
+
 class Swap(TreeAction):
     def __init__(self, tree, first: Node, second: Node):
         super().__init__(tree)
@@ -61,31 +62,46 @@ class Swap(TreeAction):
 
     def do(self):
         log.debug(f"swapping node {self.first.id} and {self.second.id}")
-        #TODO: none-checks en wat als de ene de andere z'n parent is...
-        firstParent = self.first.parent
-        secondParent = self.second.parent
-        firstParent.replace_child(self.first, self.second)
-        secondParent.replace_child(self.second, self.first)
-        self.first.parent = secondParent
-        self.second.parent = firstParent
 
-        firstLeft = self.first.left
-        secondLeft = self.second.left
-        firstLeft.parent = self.second
-        secondLeft.parent = self.first
-        self.first.left = secondLeft
-        self.second.left = firstLeft
+        first_is_root = self.first.parent is None
+        second_is_root = self.second.parent is None
 
-        firstRight = self.first.right
-        secondRight = self.second.right
-        firstRight.parent = self.second
-        secondRight.parent = self.first
-        self.first.right = secondRight
-        self.second.right = firstRight
+        first_has_second = self.first.has_child(self.second)
+        second_has_first = self.second.has_child(self.first)
 
-        if self.tree.root == self.first:
+        first_parent = self.first.parent
+        second_parent = self.second.parent
+        if not first_is_root and not second_has_first:
+            first_parent.replace_child(self.first, self.second)
+        if not second_is_root and not first_has_second:
+            second_parent.replace_child(self.second, self.first)
+
+        self.first.parent = second_parent if not first_has_second else self.second
+        self.second.parent = first_parent if not second_has_first else self.first
+
+        first_left = self.first.left
+        second_left = self.second.left
+        if first_left is not None and self.first.left is not self.second:
+            first_left.parent = self.second
+        if second_left is not None and self.second.left is not self.first:
+            second_left.parent = self.first
+
+        self.first.left = second_left if second_left is not self.first else self.second
+        self.second.left = first_left if first_left is not self.second else self.first
+
+        first_right = self.first.right
+        second_right = self.second.right
+        if first_right is not None and self.first.right is not self.second:
+            first_right.parent = self.second
+        if second_right is not None and self.second.right is not self.first:
+            second_right.parent = self.first
+
+        self.first.right = second_right if second_right is not self.first else self.second
+        self.second.right = first_right if first_right is not self.second else self.first
+
+        if self.tree.root is self.first:
             self.tree.root = self.second
-        elif self.tree.root == self.second:
+        elif self.tree.root is self.second:
             self.tree.root = self.first
 
     def revert(self):
@@ -216,11 +232,6 @@ class Remove(TreeAction):
             first = False
 
 
-
-
-
-
-
 class Insert(TreeAction):
     def __init__(self, tree, node: Node, parent: Optional['Node'], insertLeft: bool):
         super().__init__(tree)
@@ -281,4 +292,3 @@ class Insert(TreeAction):
             else:
                 self.parent.right = None
                 self.node.parent = None
-

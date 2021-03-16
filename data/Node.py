@@ -62,5 +62,8 @@ class Node:
         else:
             raise Exception("Could not find node to be replaced in children")
 
+    def has_child(self, node: 'Node'):
+        return self.left is node or self.right is node
+
     def __str__(self):
         return str(self.id)

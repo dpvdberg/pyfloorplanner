@@ -1,13 +1,14 @@
 import logging
-import random
-
 from typing import List
 from data.Contour import Contour
 from data.Node import Node
 from data.TreeAction import *
 from logutils.DeferredMessage import DeferredMessage
 
+import random
+
 log = logging.getLogger("pyfloorplanner")
+
 
 class Tree:
     def __init__(self, root: Node, nodes: List[Node]):
