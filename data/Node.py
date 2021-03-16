@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from data.Module import Module
 
@@ -14,7 +14,8 @@ class Node:
     def __init__(self, value: Module,
                  left: Optional['Node'] = None,
                  right: Optional['Node'] = None,
-                 parent: Optional['Node'] = None):
+                 parent: Optional['Node'] = None,
+                 id: Optional[int] = None):
         self.value: Module = value
         self.left: Optional['Node'] = left
         self.right: Optional['Node'] = right
@@ -23,8 +24,32 @@ class Node:
 
         # Only used for illustrating purposes
         global node_id
-        self.id = node_id
-        node_id = node_id + 1
+        if id is None:
+            self.id = node_id
+            node_id = node_id + 1
+        else:
+            self.id = id
+
+    def clone(self, parent: Optional['Node'] = None) -> 'Node':
+        clone = Node(
+            self.value,
+            None,  # left
+            None,  # right
+            None,  # parent
+            self.id
+        )
+        clone.left = self.left.clone(clone) if self.left is not None else None
+        clone.right = self.right.clone(clone) if self.right is not None else None
+        clone.parent = parent
+        return clone
+
+    def get_descendants(self) -> List['Node']:
+        descendants = [self]
+        if self.has_left_child():
+            descendants.extend(self.left.get_descendants())
+        if self.has_right_child():
+            descendants.extend(self.right.get_descendants())
+        return descendants
 
     def is_leaf(self) -> bool:
         return not self.has_left_child() and not self.has_right_child()

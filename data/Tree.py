@@ -21,8 +21,9 @@ class Tree:
 
         self.lastAction = TreeAction(self)
 
-    def clone(self):
-        pass
+    def clone(self) -> 'Tree':
+        root_clone = self.root.clone()
+        return Tree(root_clone, root_clone.get_descendants())
 
     def rotate(self):
         # TODO: fix that some nodes cannot be rotated

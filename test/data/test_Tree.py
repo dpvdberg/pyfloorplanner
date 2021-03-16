@@ -255,3 +255,25 @@ class TestTree(TestCase):
 
         t = Tree(n1, [n1, n2])
         t.print()
+
+    def test_clone(self):
+        modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
+        t = TreeBuilder.random_tree(modules, seed=1)
+
+        random.seed(2)
+        n = next(x for x in t.nodes if x.id == 18)
+
+        print(f"removing node {n.id}")
+
+        t_clone = t.clone()
+
+        print('T before modification')
+        t.print()
+
+        t.remove(n)
+
+        print('T after modification')
+        t.print()
+
+        print('T clone')
+        t_clone.print()
