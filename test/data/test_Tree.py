@@ -89,6 +89,31 @@ class TestTree(TestCase):
         t.remove(n)
         t.revertLast()
 
+    def test_remove_root(self):
+        modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
+        t = TreeBuilder.random_tree(modules, seed=1)
+
+        random.seed(2)
+        n = next(x for x in t.nodes if x.id == 19)
+
+        print(f"removing node {n.id}")
+        logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
+
+        t.remove(n)
+
+    def test_remove_root_revert(self):
+        modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
+        t = TreeBuilder.random_tree(modules, seed=1)
+
+        random.seed(2)
+        n = next(x for x in t.nodes if x.id == 19)
+
+        print(f"removing node {n.id}")
+        logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
+
+        t.remove(n)
+        t.revertLast()
+
     def test_print(self):
         m1 = Module('a', ModuleType.HARD, Dimensions(1, 1), Vector2(0, 0))
         m2 = Module('b', ModuleType.HARD, Dimensions(1, 1), Vector2(0, 0))

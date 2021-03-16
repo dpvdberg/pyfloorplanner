@@ -35,6 +35,7 @@ class Remove(TreeAction):
     def __init__(self, tree, node):
         super().__init__(tree)
         self.node: Node = node
+        self.is_root = self.tree.root is self.node
         self.orig_parent: Node = self.node.parent
         self.propagation_order = queue.Queue()
 
@@ -50,7 +51,13 @@ class Remove(TreeAction):
             # Get dangling node after move
             dangling_node = current_node.left if propagate_right else current_node.right
             # Do the replacement; set parent child pointer from current node to replace node
-            self.propagation_order.put(current_node.parent.replace_child(current_node, replace_node))
+            if self.is_root:
+                # Place Nonce token if we are removing the root
+                self.propagation_order.put(None)
+                # Set new root in tree
+                self.tree.root = replace_node
+            else:
+                self.propagation_order.put(current_node.parent.replace_child(current_node, replace_node))
             # Store propagation order of the first child
             self.propagation_order.put(propagate_right)
 
@@ -94,14 +101,18 @@ class Remove(TreeAction):
         right_child = self.propagation_order.get()
 
         # Set original node back in tree position
-        self.node.parent = self.orig_parent
-
-        if right_child:
-            dangling_child = self.orig_parent.right
-            self.orig_parent.right = self.node
+        if self.is_root:
+            dangling_child = self.tree.root
+            self.tree.root = self.node
         else:
-            dangling_child = self.orig_parent.left
-            self.orig_parent.left = self.node
+            self.node.parent = self.orig_parent
+
+            if right_child:
+                dangling_child = self.orig_parent.right
+                self.orig_parent.right = self.node
+            else:
+                dangling_child = self.orig_parent.left
+                self.orig_parent.left = self.node
 
         # Set the first child of the original node back
         propagate_right = self.propagation_order.get()
