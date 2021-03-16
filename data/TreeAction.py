@@ -1,7 +1,11 @@
+import logging
 import queue
 from random import random
 
 from data.Node import Node
+from logutils.DeferredMessage import DeferredMessage
+
+log = logging.getLogger("pyfloorplanner")
 
 
 class TreeAction:
@@ -30,8 +34,9 @@ class Rotate(TreeAction):
 class Remove(TreeAction):
     def __init__(self, tree, node):
         super().__init__(tree)
-        self.node = node
-        self.propagation_order = queue.LifoQueue()
+        self.node: Node = node
+        self.orig_parent: Node = self.node.parent
+        self.propagation_order = queue.Queue()
 
     def do(self):
         if self.node.has_two_children():
@@ -40,16 +45,19 @@ class Remove(TreeAction):
 
             # Determine whether to move left or right node up
             propagate_right = True if random() > 0.5 else False
-            # Store propagation order in case of revert
-            self.propagation_order.put(propagate_right)
             # Get node to move up
             replace_node = current_node.right if propagate_right else current_node.left
             # Get dangling node after move
             dangling_node = current_node.left if propagate_right else current_node.right
             # Do the replacement; set parent child pointer from current node to replace node
-            current_node.parent.replace_child(current_node, replace_node)
+            self.propagation_order.put(current_node.parent.replace_child(current_node, replace_node))
+            # Store propagation order of the first child
+            self.propagation_order.put(propagate_right)
 
             current_node = replace_node
+
+            # log.debug("After initial replacement:")
+            # log.debug(DeferredMessage(self.tree.to_text))
 
             # Propagate down in random order
             while dangling_node is not None:
@@ -66,13 +74,79 @@ class Remove(TreeAction):
                 current_node = dangling_node
                 dangling_node = new_dangling_node
 
+                # log.debug("After propagate:")
+                # log.debug(DeferredMessage(self.tree.to_text))
+
+            # log.debug("Propagation order:")
+            # log.debug(DeferredMessage(lambda: str(list(self.propagation_order.queue))))
         else:
             # Node has one child or no child, replace
-            self.node.parent.replace_child(self.node.get_first_child())
+            self.propagation_order.put(self.node.parent.replace_child(self.node, self.node.get_first_child()))
+            # Save position of original child
+            self.propagation_order.put(self.node.has_right_child())
+
+        # Set node as detached
+        self.node.left = None
+        self.node.right = None
+        self.node.parent = None
 
     def revert(self):
-        # TODO: use propagation_order to revert removal
-        pass
+        right_child = self.propagation_order.get()
+
+        # Set original node back in tree position
+        self.node.parent = self.orig_parent
+
+        if right_child:
+            dangling_child = self.orig_parent.right
+            self.orig_parent.right = self.node
+        else:
+            dangling_child = self.orig_parent.left
+            self.orig_parent.left = self.node
+
+        # Set the first child of the original node back
+        propagate_right = self.propagation_order.get()
+
+        if propagate_right:
+            self.node.right = dangling_child
+        else:
+            self.node.left = dangling_child
+
+        first = True
+        current_node = self.node
+        last_placed_child = dangling_child
+        previous_right = propagate_right
+
+        while not self.propagation_order.empty():
+            next_right = self.propagation_order.get()
+
+            if next_right:
+                next_child = last_placed_child.right
+                last_placed_child.right = None
+            else:
+                next_child = last_placed_child.left
+                last_placed_child.left = None
+
+            # If we previously propagated right, it means the left node was dangling and this was propagated down.
+            next_child.parent = current_node
+
+            placed_right = previous_right
+            # If this is the first propagation, we need to flip the placement
+            placed_right = placed_right if not first else not placed_right
+
+            if placed_right:
+                current_node.right = next_child
+            else:
+                current_node.left = next_child
+
+            previous_right = next_right
+            current_node = last_placed_child
+            last_placed_child = next_child
+            first = False
+
+
+
+
+
 
 
 class Move(TreeAction):

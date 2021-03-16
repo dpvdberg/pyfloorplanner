@@ -40,10 +40,21 @@ class Node:
         else:
             return None
 
-    def replace_child(self, old: 'Node', new: 'Node'):
+    def replace_child(self, old: 'Node', new: 'Node') -> bool:
+        '''
+        Replaces the old child with a new child and returns whether the old child was right
+        :param old: Old child
+        :param new: New child
+        :return: Whether the old child was on the right
+        '''
         if self.left is old:
             self.left = new
+            return False
         elif self.right is old:
             self.right = new
+            return True
         else:
             raise Exception("Could not find node to be replaced in children")
+
+    def __str__(self):
+        return str(self.id)

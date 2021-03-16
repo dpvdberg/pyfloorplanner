@@ -1,4 +1,4 @@
-import logging
+import logutils
 from unittest import TestCase
 
 from data.Module import *

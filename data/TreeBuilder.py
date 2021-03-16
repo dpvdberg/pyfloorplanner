@@ -7,7 +7,7 @@ from data.Tree import Node, Tree
 
 class TreeBuilder:
     @staticmethod
-    def random_tree(modules: List[Module], seed=None):
+    def random_tree(modules: List[Module], seed=None) -> Tree:
         '''
         Creates a random tree for the given list of modules
         :param seed: Seed for randomness

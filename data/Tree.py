@@ -2,9 +2,10 @@ import logging
 import random
 
 from typing import List
-from matplotlib import pyplot as plt
 from data.Contour import Contour
+from data.Node import Node
 from data.TreeAction import *
+from logutils.DeferredMessage import DeferredMessage
 
 log = logging.getLogger("pyfloorplanner")
 
@@ -43,7 +44,13 @@ class Tree:
         pass
 
     def revertLast(self):
+        log.debug(f"Before revert: {self.lastAction.__class__.__name__}")
+        log.debug(DeferredMessage(self.to_text))
+
         self.lastAction.revert()
+
+        log.debug(f"After revert: {self.lastAction.__class__.__name__}")
+        log.debug(DeferredMessage(self.to_text))
 
     # Calculate the area of the floorplan that belongs to the current tree
     def calc_area(self) -> float:
@@ -56,12 +63,12 @@ class Tree:
         self.lastAction = action
 
         log.debug(f"Before action: {action.__class__.__name__}")
-        log.debug(self.to_text())
+        log.debug(DeferredMessage(self.to_text))
 
         action.do()
 
         log.debug(f"After action: {action.__class__.__name__}")
-        log.debug(self.to_text())
+        log.debug(DeferredMessage(self.to_text))
 
     def to_text(self):
         # use binarytree package to allow easy printing
