@@ -29,10 +29,17 @@ class Tree:
         self.apply(Rotate(self, node))
 
     def move(self):
-        pass
+        node = random.choice(self.nodes)
+        parent = random.choice(self.nodes + [None])
+        while parent == node:
+            parent = random.choice(self.nodes + [None])
+        insertLeft = random.choice([True, False])
+        self.apply(Move(self, node, parent, insertLeft))
 
     def swap(self):
-        pass
+        first = random.choice(self.nodes)
+        second = random.choice(self.nodes)
+        self.apply(Swap(self, first, second))
 
     def remove_soft(self):
         pass
@@ -40,8 +47,8 @@ class Tree:
     def remove(self, node):
         self.apply(Remove(self, node))
 
-    def insert(self, node, parent):
-        pass
+    def insert(self, node, parent, insertLeft):
+        self.apply(Insert(self, node, parent, insertLeft))
 
     def revertLast(self):
         log.debug(f"Before revert: {self.lastAction.__class__.__name__}")
@@ -54,7 +61,7 @@ class Tree:
 
     # Calculate the area of the floorplan that belongs to the current tree
     def calc_area(self) -> float:
-        pass
+        return self.hor_cont.getMax() * self.ver_cont.getMax()
 
     def feasible(self):
         return True

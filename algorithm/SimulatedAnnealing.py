@@ -12,7 +12,8 @@ class SimulatedAnnealing:
         self.tree = Tree.build(modules)
 
     def sa(self, t: int, iterations: int, initial_temp: int, r: int):
-        operations = [self.tree.rotate, self.tree.move, self.tree.swap, self.tree.remove_soft]
+        #TODO: removeSoft is not supported
+        operations = [self.tree.rotate, self.tree.move, self.tree.swap]
 
         current_area = self.calc_area(self.tree)
 

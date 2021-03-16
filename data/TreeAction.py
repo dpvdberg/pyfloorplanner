@@ -1,6 +1,7 @@
 import logging
 import queue
-from random import random
+import random
+from typing import Optional
 
 from data.Node import Node
 from logutils.DeferredMessage import DeferredMessage
@@ -29,6 +30,51 @@ class Rotate(TreeAction):
 
     def revert(self):
         self.node.rotated = not self.node.rotated
+
+
+class Move(TreeAction):
+    def __init__(self, tree, node, parent, insertLeft):
+        super().__init__(tree)
+        self.node = node
+        self.parent = parent
+        self.insertLeft = insertLeft
+        self.remove: TreeAction
+        self.insert: TreeAction
+
+    def do(self):
+        self.remove = Remove(self.tree, self.node)
+        self.remove.do()
+        self.insert = Insert(self.tree, self.node, self.parent, self.insertLeft)
+        self.insert.do()
+
+    def revert(self):
+        self.insert.revert()
+        self.remove.revert()
+
+class Swap(TreeAction):
+    def __init__(self, tree, first: Node, second: Node):
+        super().__init__(tree)
+        self.first = first
+        self.second = second
+
+    def do(self):
+        firstParent = self.first.parent
+        secondParent = self.second.parent
+        self.first.parent = secondParent
+        self.second.parent = firstParent
+
+        firstLeft = self.first.left
+        secondLeft = self.second.left
+        self.first.left = secondLeft
+        self.second.left = firstLeft
+
+        firstRight = self.first.right
+        secondRight = self.second.right
+        self.first.right = secondRight
+        self.second.right = firstRight
+
+    def revert(self):
+        self.do()
 
 
 class Remove(TreeAction):
@@ -149,16 +195,64 @@ class Remove(TreeAction):
 
 
 
-class Move(TreeAction):
-    def __init__(self, tree, node):
+class Insert(TreeAction):
+    def __init__(self, tree, node: Node, parent: Optional['Node'], insertLeft: bool):
         super().__init__(tree)
         self.node = node
-        self.orig_parent = node.parent
+        self.parent = parent
+        self.insertLeft = insertLeft
 
     def do(self):
-        # TODO: delete and insert in random new place
-        pass
+        if self.parent is None:
+            if self.insertLeft:
+                self.node.left = self.tree.root
+                self.tree.root = self.node
+            else:
+                self.node.right = self.tree.root
+                self.tree.root = self.node
+        elif self.insertLeft:
+            if (self.parent.has_left_child()):
+                oldChild = self.parent.left
+                self.parent.replace_child(oldChild, self.node)
+                self.node.parent = self.parent
+                self.node.left = oldChild
+            else:
+                self.parent.left = self.node
+                self.node.parent = self.parent
+        else:
+            if self.parent.has_right_child():
+                oldChild = self.parent.right
+                self.parent.replace_child(oldChild, self.node)
+                self.node.parent = self.parent
+                self.node.right = oldChild
+            else:
+                self.parent.right = self.node
+                self.node.parent = self.parent
 
     def revert(self):
-        self.tree.remove(self.node)
-        self.tree.insert(self.node, self.orig_parent)
+        if self.parent is None:
+            if self.insertLeft:
+                self.tree.root = self.node.left
+                self.node.left = None
+            else:
+                self.tree.root = self.node.right
+                self.node.right = None
+        if self.insertLeft:
+            if self.node.has_left_child():
+                oldChild = self.node.left
+                self.parent.replace_child(self.node, oldChild)
+                self.node.parent = None
+                self.node.left = None
+            else:
+                self.parent.left = None
+                self.node.parent = None
+        else:
+            if self.node.has_right_child():
+                oldChild = self.node.right
+                self.parent.replace_child(self.node, oldChild)
+                self.node.parent = None
+                self.node.right = None
+            else:
+                self.parent.right = None
+                self.node.parent = None
+
