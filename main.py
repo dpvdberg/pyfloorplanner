@@ -7,7 +7,7 @@ from parsers.YALParser import YALParser
 y = YALParser()
 modules = y.parse(open('datasets/MCNC/ami33.yal', 'r').read())
 
-TreeBuilder.from_modules(modules, seed=42).print()
+TreeBuilder.random_tree(modules, seed=42).print()
 
 fp = Floorplan(modules)
 

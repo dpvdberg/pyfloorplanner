@@ -12,7 +12,7 @@ logging.basicConfig()
 class TestTree(TestCase):
     def test_remove(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
-        t = TreeBuilder.from_modules(modules, seed=1)
+        t = TreeBuilder.random_tree(modules, seed=1)
 
         random.seed(1)
         n = next(x for x in t.nodes if x.id == 18)
