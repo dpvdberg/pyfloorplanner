@@ -1,5 +1,6 @@
 import logging
 import random
+import unittest
 from unittest import TestCase
 
 from data.Module import *
@@ -152,7 +153,7 @@ class TestTree(TestCase):
         t = TreeBuilder.random_tree(modules, seed=1)
 
         random.seed(1)
-        n = Node(Module(str(21), ModuleType.HARD, Dimensions(100, 100), Vector2(0,0)))
+        n = Node(Module(str(21), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)))
         p = None
         insertLeft = False
 
@@ -168,16 +169,18 @@ class TestTree(TestCase):
         t = TreeBuilder.random_tree(modules, seed=1)
 
         random.seed(1)
-        n = Node(Module(str(21), ModuleType.HARD, Dimensions(100, 100), Vector2(0,0)))
-        p = None
-        insertLeft = False
-
-        print(f"inserting node {n.id} as root")
         logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
 
-        t.nodes.append(n)
+        t.move()
 
-        t.insert(n, p, insertLeft)
+    def test_swap(self):
+        modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
+        t = TreeBuilder.random_tree(modules, seed=1)
+
+        random.seed(1)
+        logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
+
+        t.swap()
 
     def test_print(self):
         m1 = Module('a', ModuleType.HARD, Dimensions(1, 1), Vector2(0, 0))

@@ -29,7 +29,7 @@ class Rotate(TreeAction):
         self.node.rotated = not self.node.rotated
 
     def revert(self):
-        self.node.rotated = not self.node.rotated
+        self.do()
 
 
 class Move(TreeAction):
@@ -42,6 +42,8 @@ class Move(TreeAction):
         self.insert: TreeAction
 
     def do(self):
+        log.debug(f"moving node {self.node.id}")
+
         self.remove = Remove(self.tree, self.node)
         self.remove.do()
         self.insert = Insert(self.tree, self.node, self.parent, self.insertLeft)
@@ -58,20 +60,33 @@ class Swap(TreeAction):
         self.second = second
 
     def do(self):
+        log.debug(f"swapping node {self.first.id} and {self.second.id}")
+        #TODO: none-checks en wat als de ene de andere z'n parent is...
         firstParent = self.first.parent
         secondParent = self.second.parent
+        firstParent.replace_child(self.first, self.second)
+        secondParent.replace_child(self.second, self.first)
         self.first.parent = secondParent
         self.second.parent = firstParent
 
         firstLeft = self.first.left
         secondLeft = self.second.left
+        firstLeft.parent = self.second
+        secondLeft.parent = self.first
         self.first.left = secondLeft
         self.second.left = firstLeft
 
         firstRight = self.first.right
         secondRight = self.second.right
+        firstRight.parent = self.second
+        secondRight.parent = self.first
         self.first.right = secondRight
         self.second.right = firstRight
+
+        if self.tree.root == self.first:
+            self.tree.root = self.second
+        elif self.tree.root == self.second:
+            self.tree.root = self.first
 
     def revert(self):
         self.do()
