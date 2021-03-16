@@ -1,0 +1,5 @@
+matplotlib==3.3.4
+numpy==1.17.4
+binarytree==6.2.0
+dataclasses==0.8
+lark==0.11.1
