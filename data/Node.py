@@ -46,7 +46,7 @@ class Node:
         else:
             return None
 
-    def replace_child(self, old: 'Node', new: 'Node') -> bool:
+    def replace_child(self, old: 'Node', new: Optional['Node']) -> bool:
         '''
         Replaces the old child with a new child and returns whether the old child was right
         :param old: Old child

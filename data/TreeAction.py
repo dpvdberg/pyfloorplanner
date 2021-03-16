@@ -33,11 +33,11 @@ class Rotate(TreeAction):
 
 
 class Move(TreeAction):
-    def __init__(self, tree, node, parent, insertLeft):
+    def __init__(self, tree, node, parent, insert_left):
         super().__init__(tree)
         self.node = node
         self.parent = parent
-        self.insertLeft = insertLeft
+        self.insert_left = insert_left
         self.remove: TreeAction
         self.insert: TreeAction
 
@@ -46,7 +46,7 @@ class Move(TreeAction):
 
         self.remove = Remove(self.tree, self.node)
         self.remove.do()
-        self.insert = Insert(self.tree, self.node, self.parent, self.insertLeft)
+        self.insert = Insert(self.tree, self.node, self.parent, self.insert_left)
         self.insert.do()
 
     def revert(self):
@@ -233,51 +233,51 @@ class Remove(TreeAction):
 
 
 class Insert(TreeAction):
-    def __init__(self, tree, node: Node, parent: Optional['Node'], insertLeft: bool):
+    def __init__(self, tree, node: Node, parent: Optional['Node'], insert_left: bool):
         super().__init__(tree)
         self.node = node
         self.parent = parent
-        self.insertLeft = insertLeft
+        self.insert_left = insert_left
 
     def do(self):
         if self.parent is None:
-            if self.insertLeft:
+            if self.insert_left:
                 self.node.left = self.tree.root
                 self.tree.root = self.node
             else:
                 self.node.right = self.tree.root
                 self.tree.root = self.node
-        elif self.insertLeft:
-            if (self.parent.has_left_child()):
-                oldChild = self.parent.left
-                self.parent.replace_child(oldChild, self.node)
+        elif self.insert_left:
+            if self.parent.has_left_child():
+                old_child = self.parent.left
+                self.parent.replace_child(old_child, self.node)
                 self.node.parent = self.parent
-                self.node.left = oldChild
+                self.node.left = old_child
             else:
                 self.parent.left = self.node
                 self.node.parent = self.parent
         else:
             if self.parent.has_right_child():
-                oldChild = self.parent.right
-                self.parent.replace_child(oldChild, self.node)
+                old_child = self.parent.right
+                self.parent.replace_child(old_child, self.node)
                 self.node.parent = self.parent
-                self.node.right = oldChild
+                self.node.right = old_child
             else:
                 self.parent.right = self.node
                 self.node.parent = self.parent
 
     def revert(self):
         if self.parent is None:
-            if self.insertLeft:
+            if self.insert_left:
                 self.tree.root = self.node.left
                 self.node.left = None
             else:
                 self.tree.root = self.node.right
                 self.node.right = None
-        if self.insertLeft:
+        if self.insert_left:
             if self.node.has_left_child():
-                oldChild = self.node.left
-                self.parent.replace_child(self.node, oldChild)
+                old_child = self.node.left
+                self.parent.replace_child(self.node, old_child)
                 self.node.parent = None
                 self.node.left = None
             else:
@@ -285,8 +285,8 @@ class Insert(TreeAction):
                 self.node.parent = None
         else:
             if self.node.has_right_child():
-                oldChild = self.node.right
-                self.parent.replace_child(self.node, oldChild)
+                old_child = self.node.right
+                self.parent.replace_child(self.node, old_child)
                 self.node.parent = None
                 self.node.right = None
             else:
