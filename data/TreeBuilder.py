@@ -2,8 +2,8 @@ import random
 from typing import List
 
 from data.Module import Module
-from data.Tree import Node, Tree
-
+from data.Tree import Tree
+from data.Node import Node, reset_node_id
 
 class TreeBuilder:
     @staticmethod
@@ -15,6 +15,7 @@ class TreeBuilder:
         :return: A B-tree
         '''
         random.seed(seed)
+        reset_node_id()
 
         nodes = [Node(m) for m in modules]
         queue = nodes.copy()
