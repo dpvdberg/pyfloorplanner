@@ -23,7 +23,7 @@ class Tree:
 
     def clone(self) -> 'Tree':
         root_clone = self.root.clone()
-        return Tree(root_clone, root_clone.get_descendants())
+        return Tree(root_clone, root_clone.nodes_in_subtree())
 
     def rotate(self):
         # TODO: fix that some nodes cannot be rotated

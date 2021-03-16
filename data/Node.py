@@ -43,12 +43,12 @@ class Node:
         clone.parent = parent
         return clone
 
-    def get_descendants(self) -> List['Node']:
+    def nodes_in_subtree(self) -> List['Node']:
         descendants = [self]
         if self.has_left_child():
-            descendants.extend(self.left.get_descendants())
+            descendants.extend(self.left.nodes_in_subtree())
         if self.has_right_child():
-            descendants.extend(self.right.get_descendants())
+            descendants.extend(self.right.nodes_in_subtree())
         return descendants
 
     def is_leaf(self) -> bool:
