@@ -185,6 +185,19 @@ class TestTree(TestCase):
 
         t.apply(Swap(t, u, v))
 
+    def test_swap_normal_back(self):
+        modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
+        t = TreeBuilder.random_tree(modules, seed=1)
+
+        random.seed(1)
+        logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
+
+        u = next(x for x in t.nodes if x.id == 11)
+        v = next(x for x in t.nodes if x.id == 15)
+
+        t.apply(Swap(t, u, v))
+        t.revertLast()
+
     def test_swap_root(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
         t = TreeBuilder.random_tree(modules, seed=1)
