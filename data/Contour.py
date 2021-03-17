@@ -29,6 +29,8 @@ class Contour:
                 left = False
                 continue
             if p.x >= interval.max:
+                if p.y > max_value:
+                    max_value = p.y
                 return max_value
             else:
                 if p.y > max_value:
@@ -49,7 +51,10 @@ class Contour:
                 start_index = i
                 continue
             if p.x >= x_max:
-                new_intervals: blist = self.intervals[0:start_index]
+                if self.intervals[start_index-1].x is intervals[0].x and self.intervals[start_index-1].y is intervals[0].y:
+                    new_intervals: blist = self.intervals[0:start_index-1]
+                else:
+                    new_intervals: blist = self.intervals[0:start_index]
                 for insert_interval in intervals:
                     # update maximum x and y values if necessary
                     if insert_interval.y > self.max_y:
@@ -57,9 +62,21 @@ class Contour:
                     if insert_interval.x > self.max_x:
                         self.max_x = insert_interval.x
 
-                new_intervals.extend(intervals)
+                if self.intervals[i].x is intervals[-1].x and self.intervals[i].y is intervals[-1].y:
+                    # if intervals[-1].y <= self.intervals[i + 1].y and intervals[-1].y != 0:
+                    #     new_intervals.extend(intervals[:-1])
+                    # else:
+                    new_intervals.extend(intervals)
 
-                new_intervals.extend(self.intervals[i:])
+                    new_intervals.extend(self.intervals[i+1:])
+                else:
+                    # if intervals[-1].y <= self.intervals[i].y and intervals[-1].y != 0:
+                    #     new_intervals.extend(intervals[:-1])
+                    # else:
+                    new_intervals.extend(intervals)
+
+                    new_intervals.extend(self.intervals[i:])
+
                 self.intervals = new_intervals
                 break
             else:

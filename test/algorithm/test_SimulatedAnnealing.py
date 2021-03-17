@@ -31,11 +31,11 @@ class TestSimulatedAnnealing(TestCase):
 
         totalArea = sum([i*8*i*6 for i in range(20)])
 
-        best = sa.sa(totalArea, 100, 10, 0.995, 0.0001)
+        best = sa.sa(totalArea, 10, 10, 0.995, 0.0001)
 
         best.print()
         fp = Floorplan(best)
-        fp.plot(draw_tree=True)
+        fp.plot(draw_tree=True, draw_contour=True)
 
     def test_sa_rotate(self):
         modules = [Module(str(0), ModuleType.HARD, Dimensions(200, 2), Vector2(0, 0)),
