@@ -1,11 +1,13 @@
 import math
-
+from blist import blist
 from data.Common import Interval, Vector2
 
 
 class Contour:
     def __init__(self):
-        self.intervals = [Vector2(0, 0), Vector2(math.inf, 0)]
+        self.intervals = blist()
+        self.intervals.append(Vector2(0, 0))
+        self.intervals.append(Vector2(math.inf, 0))
         self.max_y = 0
         self.max_x = 0
 
@@ -26,7 +28,7 @@ class Contour:
                 continue
             elif left:
                 left = False
-                i = i+1
+                i = i + 1
                 # ensure that we skip the first time we encounter a point with x = interval.min
                 continue
             if p.x >= interval.max:
@@ -34,13 +36,13 @@ class Contour:
             else:
                 if p.y > max_value:
                     max_value = p.y
-                i = i+1
+                i = i + 1
 
     def insert_intervals(self, intervals, x_min, x_max):
         i = 0
         left = True
-        while i < len(self.intervals):
-            p = self.intervals[i]
+        start_index = 0
+        for p in iter(self.intervals):
             if p.x < x_min:
                 i = i + 1
                 continue
@@ -48,19 +50,23 @@ class Contour:
                 left = False
                 i = i + 1
                 # Prevent removal of point with x == x_min
+                start_index = i
                 continue
             if p.x >= x_max:
-                for insert_interval in reversed(intervals):
+                new_intervals: blist = self.intervals[0:start_index]
+                new_intervals.extend(intervals)
+                for insert_interval in intervals:
                     # update maximum x and y values if necessary
                     if insert_interval.y > self.max_y:
                         self.max_y = insert_interval.y
                     if insert_interval.x > self.max_x:
                         self.max_x = insert_interval.x
 
-                    self.intervals.insert(i, insert_interval)
+                new_intervals.extend(self.intervals[i:])
+                self.intervals = new_intervals
                 break
             else:
-                del self.intervals[i]
+                i = i + 1
 
     def __iter__(self):
         return iter(self.intervals)
