@@ -33,8 +33,6 @@ class TestSimulatedAnnealing(TestCase):
 
         best = sa.sa(totalArea, 100, 10, 0.995, 0.0001)
 
-        print(f"Area = {area}")
-
         best.print()
         fp = Floorplan(best)
         fp.plot(draw_tree=True)
