@@ -1,4 +1,6 @@
 import math
+from typing import List
+
 from blist import blist
 from data.Common import Interval, Vector2
 
@@ -32,7 +34,7 @@ class Contour:
                 if p.y > max_value:
                     max_value = p.y
 
-    def insert_intervals(self, intervals, x_min, x_max):
+    def insert_intervals(self, intervals : List[Vector2], x_min, x_max):
         i = 0
         left = True
         start_index = 0
@@ -48,7 +50,6 @@ class Contour:
                 continue
             if p.x >= x_max:
                 new_intervals: blist = self.intervals[0:start_index]
-                new_intervals.extend(intervals)
                 for insert_interval in intervals:
                     # update maximum x and y values if necessary
                     if insert_interval.y > self.max_y:

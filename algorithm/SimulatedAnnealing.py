@@ -26,7 +26,6 @@ class SimulatedAnnealing:
         temp = initial_temp
 
         # Loop until threshold is met
-
         while self.tree.calc_area() >= t and temp >= temp_t:
             for i in range(iterations):
                 # Perform a random operation

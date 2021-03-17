@@ -24,6 +24,9 @@ class Tree:
 
         self.lastAction = TreeAction(self)
 
+    def validate_parents(self) -> bool:
+        return self.root.validate_parents()
+
     def clone(self) -> 'Tree':
         root_clone = self.root.clone()
         return Tree(root_clone, root_clone.nodes_in_subtree())

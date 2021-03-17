@@ -135,8 +135,9 @@ class Remove(TreeAction):
                 self.tree.root = replace_node
             else:
                 self.propagation_order.put(current_node.parent.replace_child(current_node, replace_node))
-                # update parent
-                replace_node.parent = current_node.parent
+
+            # update parent
+            replace_node.parent = current_node.parent
 
             # Store propagation order of the first child
             self.propagation_order.put(propagate_right)

@@ -92,3 +92,9 @@ class Node:
 
     def __str__(self):
         return str(self.id)
+
+    def validate_parents(self, parent: Optional['Node'] = None) -> bool:
+        valid = self.parent is parent
+        valid = valid and (self.right is None or self.right.validate_parents(self))
+        valid = valid and (self.left is None or self.left.validate_parents(self))
+        return valid
