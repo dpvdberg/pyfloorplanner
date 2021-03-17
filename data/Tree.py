@@ -63,7 +63,17 @@ class Tree:
 
     # Calculate the area of the floorplan that belongs to the current tree
     def calc_area(self) -> float:
-        return self.hor_cont.getMax() * self.ver_cont.getMax()
+        # Keep track of a stack that traverses the tree in DFS order
+        stack = queue.LifoQueue()
+        stack.put(self.root)
+        while not stack:
+            node = stack.get()
+            if not node is None:
+                self.calc_position(node)
+                stack.put(node.right)
+                stack.put(node.left)
+
+        return self.hor_cont.get_max() * self.ver_cont.get_max()
 
     def feasible(self):
         return True
@@ -97,3 +107,6 @@ class Tree:
 
     def print(self):
         print(self.to_text())
+
+    def calc_position(self, n):
+
