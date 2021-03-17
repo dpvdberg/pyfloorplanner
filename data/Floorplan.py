@@ -14,17 +14,12 @@ from data.Tree import Tree
 
 
 class Floorplan:
-    def __init__(self, tree : Tree):
+    def __init__(self, tree: Tree):
         self.tree = tree
         self.modules: List[Module] = [x.value for x in self.tree.root.nodes_in_subtree()]
 
     def max_dimension(self) -> Dimensions:
-        max_x, max_y = 0, 0
-        for m in self.modules:
-            max_x = max(max_x, m.position.x + m.dimensions.width)
-            max_y = max(max_y, m.position.y + m.dimensions.height)
-
-        return Dimensions(max_x, max_y)
+        return Dimensions(self.tree.hor_cont.get_max_x(), self.tree.hor_cont.get_max_y())
 
     def plot(self, highlight_empty_space=False, draw_names=False, name_size=6,
              draw_tree=False, tree_edge_color='k', tree_node_color='#1f78b4', tree_node_size=300, tree_line_width=1.0,
@@ -32,6 +27,7 @@ class Floorplan:
         fig = plt.figure()
         ax = fig.add_subplot(111, aspect='equal')
         patches = []
+
         for i, n in enumerate(self.tree.nodes):
             m = n.value
             if n.rotated:
@@ -56,14 +52,13 @@ class Floorplan:
                              edge_color=tree_edge_color, node_color=tree_node_color,
                              node_size=tree_node_size, linewidths=tree_line_width)
 
-
         md = self.max_dimension()
         if not draw_contour:
             plt.xlim([0, md.width])
             plt.ylim([0, md.height])
         else:
-            plt.xlim([-contour_width, md.width+contour_width])
-            plt.ylim([-contour_width, md.height+contour_width])
+            plt.xlim([-contour_width, md.width + contour_width])
+            plt.ylim([-contour_width, md.height + contour_width])
 
         pc = PatchCollection(patches, edgecolor='black')
 

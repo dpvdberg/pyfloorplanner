@@ -116,7 +116,11 @@ class Tree:
         G = nx.DiGraph()
         pos = {}
         for n in self.nodes:
-            pos[n.id] = (n.value.position + 0.5 * n.value.dimensions.to_vector()).to_tuple()
+            dim = n.value.dimensions.to_vector()
+            if n.rotated:
+                dim = Vector2(dim.y, dim.x)
+
+            pos[n.id] = (n.value.position + 0.5 * dim).to_tuple()
             if n.has_left_child():
                 G.add_edge(n.id, n.left.id)
             if n.has_right_child():
