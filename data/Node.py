@@ -15,12 +15,13 @@ class Node:
                  left: Optional['Node'] = None,
                  right: Optional['Node'] = None,
                  parent: Optional['Node'] = None,
-                 id: Optional[int] = None):
+                 id: Optional[int] = None,
+                 rotated : bool = False):
         self.value: Module = value
         self.left: Optional['Node'] = left
         self.right: Optional['Node'] = right
         self.parent: Optional['Node'] = parent
-        self.rotated: bool = False
+        self.rotated: bool = rotated
 
         # Only used for illustrating purposes
         global node_id
@@ -36,7 +37,8 @@ class Node:
             None,  # left
             None,  # right
             None,  # parent
-            self.id
+            self.id,
+            self.rotated
         )
         clone.left = self.left.clone(clone) if self.left is not None else None
         clone.right = self.right.clone(clone) if self.right is not None else None
