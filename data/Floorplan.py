@@ -32,7 +32,7 @@ class Floorplan:
 
     def plot(self, highlight_empty_space=False, draw_names=False, name_size=6,
              draw_tree=False, tree_edge_color='k', tree_node_color='#1f78b4', tree_node_size=300, tree_line_width=1.0,
-             draw_contour=False, contour_style='g', contour_width=2):
+             draw_contour=False, contour_style='r', contour_width=3):
         fig = plt.figure()
         ax = fig.add_subplot(111, aspect='equal')
         patches = []
@@ -45,21 +45,26 @@ class Floorplan:
                             fontsize=name_size, ha='center', va='center')
 
         if self.tree:
+            if draw_contour:
+                contour = self.tree.hor_cont
+                contour_x = [p.x for p in list(contour)[:-1]]
+                contour_y = [p.y for p in list(contour)[:-1]]
+                plt.plot(contour_x, contour_y, contour_style, linewidth=contour_width)
+
             if draw_tree:
                 network, positions = self.tree.to_networkx()
                 nx.draw_networkx(network, positions, arrows=True,
-                                 tree_edge_color=tree_edge_color, tree_node_color=tree_node_color,
-                                 tree_node_size=tree_node_size, tree_line_width=tree_line_width)
+                                 edge_color=tree_edge_color, node_color=tree_node_color,
+                                 node_size=tree_node_size, linewidths=tree_line_width)
 
-            if draw_contour:
-                contour = self.tree.hor_cont
-                contour_x = [p.x for p in contour[:-1]]
-                contour_y = [p.y for p in contour[:-1]]
-                plt.plot(contour_x, contour_y, contour_style, linewidth=contour_width)
 
         md = self.max_dimension()
-        plt.xlim([0, md.width])
-        plt.ylim([0, md.height])
+        if not draw_contour:
+            plt.xlim([0, md.width])
+            plt.ylim([0, md.height])
+        else:
+            plt.xlim([-contour_width, md.width+contour_width])
+            plt.ylim([-contour_width, md.height+contour_width])
 
         pc = PatchCollection(patches, edgecolor='black')
 
