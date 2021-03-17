@@ -171,11 +171,20 @@ class Remove(TreeAction):
         else:
             new_child = self.node.get_first_child()
             # Node has one child or no child, replace
-            self.propagation_order.put(self.node.parent.replace_child(self.node, new_child))
+            if self.is_root:
+                # Place Nonce token if we are removing the root
+                self.propagation_order.put(None)
+                # Set new root in tree
+                self.tree.root = new_child
+            else:
+                self.propagation_order.put(self.node.parent.replace_child(self.node, new_child))
+
             # Update parent pointers
             if new_child:
                 new_child.parent = self.node.parent
+
             # Save position of original child
+            # Note that in case there was no child, it does not matter where None is placed back
             self.propagation_order.put(self.node.has_right_child())
 
         # Set node as detached
