@@ -42,7 +42,7 @@ class SimulatedAnnealing:
 
                     else:
                         # Else, keep the solution with probability p
-                        p = math.e ** (-(new_cost - current_cost) / initial_temp)
+                        p = math.e ** (-(new_cost - current_cost) / temp)
                         if random.uniform(0, 1) < p:
                             current_cost = new_cost
                         else:
