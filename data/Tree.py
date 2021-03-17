@@ -39,10 +39,11 @@ class Tree:
     def move(self):
         node = random.choice(self.nodes)
         parent = random.choice(self.nodes + [None])
-        while parent == node:
+        while parent is node:
             parent = random.choice(self.nodes + [None])
-        insertLeft = random.choice([True, False])
-        self.apply(Move(self, node, parent, insertLeft))
+
+        insert_left = random.random() > 0.5
+        self.apply(Move(self, node, parent, insert_left))
 
     def swap(self):
         first = random.choice(self.nodes)

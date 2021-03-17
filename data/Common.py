@@ -6,6 +6,16 @@ class Vector2:
     x: float
     y: float
 
+    def __eq__(self, other):
+        if isinstance(other, Vector2):
+            return self.x == other.x and self.y == other.y
+        return self == other
+
+    def __ne__(self, other):
+        if isinstance(other, Vector2):
+            return self.x != other.x or self.y != other.y
+        return self != other
+
     @staticmethod
     def from_tuple(t: (float, float)):
         return Vector2(t[0], t[1])
