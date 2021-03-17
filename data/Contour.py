@@ -57,6 +57,8 @@ class Contour:
                     if insert_interval.x > self.max_x:
                         self.max_x = insert_interval.x
 
+                new_intervals.extend(intervals)
+
                 new_intervals.extend(self.intervals[i:])
                 self.intervals = new_intervals
                 break
