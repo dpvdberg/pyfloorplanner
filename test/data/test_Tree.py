@@ -14,7 +14,6 @@ logging.basicConfig()
 log = logging.getLogger("pyfloorplanner")
 
 
-
 class TestTree(TestCase):
     def test_remove_propagate(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
@@ -122,7 +121,7 @@ class TestTree(TestCase):
         t = TreeBuilder.random_tree(modules, seed=1)
 
         random.seed(1)
-        n = Node(Module(str(21), ModuleType.HARD, Dimensions(100, 100), Vector2(0,0)))
+        n = Node(Module(str(21), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)))
         p = next(x for x in t.nodes if x.id == 6)
         insertLeft = True
 
@@ -138,7 +137,7 @@ class TestTree(TestCase):
         t = TreeBuilder.random_tree(modules, seed=1)
 
         random.seed(1)
-        n = Node(Module(str(21), ModuleType.HARD, Dimensions(100, 100), Vector2(0,0)))
+        n = Node(Module(str(21), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)))
         p = next(x for x in t.nodes if x.id == 11)
         insertLeft = False
 

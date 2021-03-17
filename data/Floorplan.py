@@ -2,6 +2,7 @@ import math
 
 import matplotlib
 import numpy as np
+import networkx as nx
 from matplotlib.collections import PatchCollection
 from typing import List
 
@@ -9,21 +10,17 @@ from data.Module import *
 from matplotlib import pyplot as plt, cm
 from matplotlib.patches import Rectangle
 
+from data.Tree import Tree
+
 
 class Floorplan:
-    def __init__(self, modules: List[Module]):
-        self.modules: List[Module] = modules
-        self.aspect_ratio: Interval = self.compute_aspect_ratio_interval()
-
-    def compute_aspect_ratio_interval(self) -> Interval:
-        min_ar = math.inf
-        max_ar = -math.inf
-        for module in self.modules:
-            ar = module.dimensions.height / module.dimensions.width
-            min_ar = min(min_ar, ar)
-            max_ar = max(max_ar, ar)
-
-        return Interval(min_ar, max_ar)
+    def __init__(self, arg):
+        if isinstance(arg, list):
+            self.tree = None
+            self.modules: List[Module] = arg
+        elif isinstance(arg, Tree):
+            self.tree = arg
+            self.modules: List[Module] = [x.value for x in self.tree.root.nodes_in_subtree()]
 
     def max_dimension(self) -> Dimensions:
         max_x, max_y = 0, 0
@@ -33,7 +30,9 @@ class Floorplan:
 
         return Dimensions(max_x, max_y)
 
-    def plot(self, highlight_empty_space=False, draw_names=False, name_size=6):
+    def plot(self, highlight_empty_space=False, draw_names=False, name_size=6,
+             draw_tree=False, tree_edge_color='k', tree_node_color='#1f78b4', tree_node_size=300, tree_line_width=1.0,
+             draw_contour=False, contour_style='g', contour_width=2):
         fig = plt.figure()
         ax = fig.add_subplot(111, aspect='equal')
         patches = []
@@ -44,6 +43,19 @@ class Floorplan:
             if draw_names:
                 ax.annotate(m.name, m.position + 0.5 * m.dimensions.to_vector(), color='w', weight='bold',
                             fontsize=name_size, ha='center', va='center')
+
+        if self.tree:
+            if draw_tree:
+                network, positions = self.tree.to_networkx()
+                nx.draw_networkx(network, positions, arrows=True,
+                                 tree_edge_color=tree_edge_color, tree_node_color=tree_node_color,
+                                 tree_node_size=tree_node_size, tree_line_width=tree_line_width)
+
+            if draw_contour:
+                contour = self.tree.hor_cont
+                contour_x = [p.x for p in contour[:-1]]
+                contour_y = [p.y for p in contour[:-1]]
+                plt.plot(contour_x, contour_y, contour_style, linewidth=contour_width)
 
         md = self.max_dimension()
         plt.xlim([0, md.width])

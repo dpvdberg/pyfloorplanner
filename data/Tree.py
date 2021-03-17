@@ -2,10 +2,12 @@ import logging
 from typing import List
 
 from data.Common import Vector2, Interval
+from typing import List, Tuple
 from data.Contour import Contour
 from data.Node import Node
 from data.TreeAction import *
 from logutils.DeferredMessage import DeferredMessage
+import networkx as nx
 
 import random
 
@@ -105,6 +107,18 @@ class Tree:
             bnode.right = bnodes[node.right]
 
         return str(bnodes[self.root])
+
+    def to_networkx(self) -> Tuple[nx.DiGraph, map]:
+        G = nx.DiGraph()
+        pos = {}
+        for n in self.nodes:
+            pos[n] = (n.value.position + 0.5 * n.value.dimensions.to_vector()).to_tuple()
+            if n.has_left_child():
+                G.add_edge(n.id, n.left.id)
+            if n.has_right_child():
+                G.add_edge(n.id, n.right.id)
+
+        return G, pos
 
     def print(self):
         print(self.to_text())
