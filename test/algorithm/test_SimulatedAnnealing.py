@@ -46,9 +46,9 @@ class TestSimulatedAnnealing(TestCase):
         sa = SimulatedAnnealing(modules, seed=1)
         sa.tree.print()
 
-        totalArea = 100*100*20
+        totalArea = 200*2 + 100*100 + 100*100
 
-        best = sa.sa(totalArea, 10, 10, 0.99, 0.01)
+        best = sa.sa(totalArea, 10, 100, 0.99, 0.01)
 
         best.print()
         fp = Floorplan(best)
