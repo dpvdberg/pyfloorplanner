@@ -18,25 +18,19 @@ class Contour:
         return self.max_x
 
     def get_max_interval(self, interval: Interval):
-        i = 0
         left = True
         max_value = 0
-        while i < len(self.intervals):
-            p = self.intervals[i]
+        for p in iter(self.intervals):
             if p.x < interval.min:
-                i = i + 1
                 continue
             elif left:
                 left = False
-                i = i + 1
-                # ensure that we skip the first time we encounter a point with x = interval.min
                 continue
             if p.x >= interval.max:
                 return max_value
             else:
                 if p.y > max_value:
                     max_value = p.y
-                i = i + 1
 
     def insert_intervals(self, intervals, x_min, x_max):
         i = 0
