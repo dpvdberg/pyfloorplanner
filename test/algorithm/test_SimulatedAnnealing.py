@@ -2,6 +2,7 @@ from random import random
 from unittest import TestCase
 
 from algorithm.SimulatedAnnealing import SimulatedAnnealing
+from data.Floorplan import Floorplan
 from data.Module import Module, ModuleType, Dimensions, Vector2
 from data.TreeBuilder import TreeBuilder
 
@@ -15,6 +16,12 @@ class TestSimulatedAnnealing(TestCase):
 
         totalArea = 100*100*20
 
-        sa.sa(totalArea, 10, 10, 0.99, 0.01)
+        best = sa.sa(totalArea, 10, 10, 0.99, 0.01)
+
+        best.print()
+        fp = Floorplan(best)
+        fp.plot()
+
+
 
 
