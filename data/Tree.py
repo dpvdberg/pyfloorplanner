@@ -70,6 +70,7 @@ class Tree:
     # Calculate the area of the floorplan that belongs to the current tree
     def calc_area(self) -> float:
         # Keep track of a stack that traverses the tree in DFS order
+        self.hor_cont = Contour()
         stack = queue.LifoQueue()
         stack.put(self.root)
         while not stack.empty():

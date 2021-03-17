@@ -27,6 +27,7 @@ class SimulatedAnnealing:
 
         # Loop until threshold is met
         while self.tree.calc_area() >= t and temp >= temp_t:
+            print("New loop!")
             for i in range(iterations):
                 # Perform a random operation
                 random.choice(operations)()
@@ -54,6 +55,10 @@ class SimulatedAnnealing:
 
             # After iterations, reduce temp and continue
             temp = r * temp
+        if temp < temp_t:
+            print("Stopped due to temperature")
+        if self.tree.calc_area() < t:
+            print("Stopped due to tree")
         return best_tree
 
     def calc_average_area(self, tree, operations):
