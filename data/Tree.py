@@ -71,14 +71,8 @@ class Tree:
     def calc_area(self) -> float:
         # Keep track of a stack that traverses the tree in DFS order
         self.hor_cont = Contour()
-        stack = queue.LifoQueue()
-        stack.put(self.root)
-        while not stack.empty():
-            node = stack.get()
-            if not node is None:
-                self.calc_position(node)
-                stack.put(node.right)
-                stack.put(node.left)
+        for node in self.root.dfs():
+            self.calc_position(node)
 
         return self.hor_cont.get_max_y() * self.hor_cont.get_max_x()
 

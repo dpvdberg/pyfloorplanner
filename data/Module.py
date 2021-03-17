@@ -14,10 +14,10 @@ class ModuleType(Enum):
 
 class Module:
     def __init__(self, name: str, module_type: ModuleType, dimensions: Dimensions, position: Vector2):
-        self.name = name
-        self.module_type = module_type
-        self.dimensions = dimensions
-        self.position = position
+        self.name: str = name
+        self.module_type: ModuleType = module_type
+        self.dimensions: Dimensions = dimensions
+        self.position: Vector2 = position
 
     def __str__(self):
         return "Module: " \

@@ -31,6 +31,13 @@ class Node:
         else:
             self.id = id
 
+    def dfs(self):
+        yield self
+        if self.has_left_child():
+            yield from self.left.dfs()
+        if self.has_right_child():
+            yield from self.right.dfs()
+
     def clone(self, parent: Optional['Node'] = None) -> 'Node':
         clone = Node(
             self.value,

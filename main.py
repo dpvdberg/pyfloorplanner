@@ -15,5 +15,4 @@ best = sa.sa(totalArea, 10, 2, 0.99, 0.0001)
 
 fp = Floorplan(best)
 
-fp.align_horizontally()
-fp.plot(draw_names=True, draw_tree=True)
+fp.plot(draw_tree=True, draw_contour=True, tree_label_font_size=6)

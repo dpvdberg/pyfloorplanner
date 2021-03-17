@@ -22,7 +22,8 @@ class Floorplan:
         return Dimensions(self.tree.hor_cont.get_max_x(), self.tree.hor_cont.get_max_y())
 
     def plot(self, highlight_empty_space=False, draw_names=False, name_size=6,
-             draw_tree=False, tree_edge_color='k', tree_node_color='#1f78b4', tree_node_size=300, tree_line_width=1.0,
+             draw_tree=False, tree_edge_color='k', tree_node_color='#1f78b4', tree_node_size=150,
+             tree_label_font_size=10, tree_line_width=1.0,
              draw_contour=False, contour_style='r', contour_width=3):
         fig = plt.figure()
         ax = fig.add_subplot(111, aspect='equal')
@@ -50,6 +51,7 @@ class Floorplan:
             network, positions = self.tree.to_networkx()
             nx.draw_networkx(network, positions, arrows=True,
                              edge_color=tree_edge_color, node_color=tree_node_color,
+                             font_size=tree_label_font_size,
                              node_size=tree_node_size, linewidths=tree_line_width)
 
         md = self.max_dimension()
