@@ -23,7 +23,7 @@ class TestSimulatedAnnealing(TestCase):
         fp.plot(draw_tree=True)
 
     def test_sa2(self):
-        modules = [Module(str(i), ModuleType.HARD, Dimensions(i*8, i*6), Vector2(0, 0)) for i in range(20)]
+        modules = [Module(str(i), ModuleType.HARD, Dimensions(i*8, i*6), Vector2(0, 0)) for i in range(1, 20)]
         modules.append(Module("extra", ModuleType.HARD, Dimensions(200,10), Vector2(0,0)))
 
         sa = SimulatedAnnealing(modules, seed=1)
@@ -31,7 +31,7 @@ class TestSimulatedAnnealing(TestCase):
 
         totalArea = sum([i*8*i*6 for i in range(20)])
 
-        best = sa.sa(totalArea, 100, 10, 0.995, 0.0001)
+        best = sa.sa(totalArea, 50, 10, 0.995, 0.0001)
 
         best.print()
         fp = Floorplan(best)
