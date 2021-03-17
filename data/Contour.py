@@ -40,3 +40,5 @@ class Contour:
             else:
                 del self.intervals[i]
 
+    def __iter__(self):
+        return iter(self.intervals)
