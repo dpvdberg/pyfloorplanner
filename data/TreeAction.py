@@ -202,6 +202,7 @@ class Remove(TreeAction):
             self.node.right = dangling_child
         else:
             self.node.left = dangling_child
+        dangling_child.parent = self.node
 
         first = True
         current_node = self.node
