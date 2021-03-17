@@ -1,5 +1,7 @@
 import logging
 from typing import List
+
+from data.Common import Vector2, Interval
 from data.Contour import Contour
 from data.Node import Node
 from data.TreeAction import *
@@ -17,7 +19,6 @@ class Tree:
         self.root = root
 
         self.hor_cont = Contour()
-        self.ver_cont = Contour()
 
         self.lastAction = TreeAction(self)
 
@@ -66,14 +67,14 @@ class Tree:
         # Keep track of a stack that traverses the tree in DFS order
         stack = queue.LifoQueue()
         stack.put(self.root)
-        while not stack:
+        while not stack.empty():
             node = stack.get()
             if not node is None:
                 self.calc_position(node)
                 stack.put(node.right)
                 stack.put(node.left)
 
-        return self.hor_cont.get_max() * self.ver_cont.get_max()
+        return self.hor_cont.get_max_y() * self.hor_cont.get_max_x()
 
     def feasible(self):
         return True
@@ -108,5 +109,41 @@ class Tree:
     def print(self):
         print(self.to_text())
 
-    def calc_position(self, n):
-        pass
+    def calc_position(self, n: Node):
+        if self.root is n:
+            n.value.position = Vector2(0, 0)
+
+            dimensions = n.value.dimensions
+            if n.rotated:
+                node_width = dimensions.height
+                node_height = dimensions.width
+            else:
+                node_width = dimensions.width
+                node_height = dimensions.height
+
+            self.hor_cont.insert_intervals([Vector2(0, node_height), Vector2(node_width, node_height),
+                                           Vector2(node_width, 0)], 0, node_width)
+            return
+
+        parent = n.parent
+        if n is parent.left:
+            parent_width = parent.value.dimensions.width if not parent.rotated else parent.value.dimensions.height
+            x = parent.value.position.x + parent_width
+        elif n is parent.right:
+            x = parent.value.position.x
+        else:
+            raise Exception("Tree structure is broken. Parent node does not have node as its child.")
+
+        dimensions = n.value.dimensions
+        if n.rotated:
+            node_width = dimensions.height
+            node_height = dimensions.width
+        else:
+            node_width = dimensions.width
+            node_height = dimensions.height
+
+        y = self.hor_cont.get_max_interval(Interval(x, x + node_width))
+        n.value.position = Vector2(x, y)
+
+        self.hor_cont.insert_intervals([Vector2(x, y + node_height), Vector2(x + node_width, y + node_height),
+                                       Vector2(x + node_width, y)], x, x + node_width)

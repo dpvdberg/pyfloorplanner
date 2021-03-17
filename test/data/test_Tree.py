@@ -3,6 +3,7 @@ import random
 import unittest
 from unittest import TestCase
 
+from data.Floorplan import Floorplan
 from data.Module import *
 from data.Node import Node
 from data.Tree import Tree, Swap
@@ -277,3 +278,17 @@ class TestTree(TestCase):
 
         print('T clone')
         t_clone.print()
+
+    def test_calc_area(self):
+        modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
+        t = TreeBuilder.random_tree(modules, seed=1)
+
+        random.seed(1)
+
+        print('T after construction')
+        t.print()
+
+        t.calc_area()
+
+        fp = Floorplan(modules)
+        fp.plot()
