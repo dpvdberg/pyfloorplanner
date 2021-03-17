@@ -164,8 +164,12 @@ class Remove(TreeAction):
             # log.debug("Propagation order:")
             # log.debug(DeferredMessage(lambda: str(list(self.propagation_order.queue))))
         else:
+            new_child = self.node.get_first_child()
             # Node has one child or no child, replace
-            self.propagation_order.put(self.node.parent.replace_child(self.node, self.node.get_first_child()))
+            self.propagation_order.put(self.node.parent.replace_child(self.node, new_child))
+            # Update parent pointers
+            if new_child:
+                new_child.parent = self.node.parent
             # Save position of original child
             self.propagation_order.put(self.node.has_right_child())
 

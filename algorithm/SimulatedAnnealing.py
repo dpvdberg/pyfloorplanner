@@ -9,12 +9,12 @@ from data.TreeBuilder import TreeBuilder
 
 
 class SimulatedAnnealing:
-    def __init__(self, modules: list[Module], seed = None):
+    def __init__(self, modules: List[Module], seed=None):
         self.tree = TreeBuilder.random_tree(modules, seed=seed)
         random.seed(seed)
 
     def sa(self, t: int, iterations: int, initial_temp: float, r: float, temp_t: float):
-        #TODO: removeSoft is not supported
+        # TODO: removeSoft is not supported
         operations = [self.tree.rotate, self.tree.move, self.tree.swap]
 
         current_area = self.tree.calc_area()
@@ -32,7 +32,7 @@ class SimulatedAnnealing:
                 random.choice(operations)()
 
                 if self.tree.feasible():
-                    #TODO: use normalized area instead of total area
+                    # TODO: use normalized area instead of total area
                     new_area = self.tree.calc_area()
 
                     # If the operation generated a better area, keep this as our current solution
@@ -55,6 +55,3 @@ class SimulatedAnnealing:
             # After iterations, reduce temp and continue
             temp = r * temp
             return best_tree
-
-
-
