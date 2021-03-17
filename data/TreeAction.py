@@ -277,12 +277,14 @@ class Insert(TreeAction):
         if self.parent is None:
             if self.insert_left:
                 self.tree.root = self.node.left
-                self.node.left = None
                 self.node.left.parent = None
+                self.node.left = None
+                return
             else:
                 self.tree.root = self.node.right
+                self.node.right.parent = None
                 self.node.right = None
-                self.node.left.parent = None
+                return
         if self.insert_left:
             if self.node.has_left_child():
                 old_child = self.node.left
