@@ -268,6 +268,7 @@ class Insert(TreeAction):
                 self.parent.replace_child(old_child, self.node)
                 self.node.parent = self.parent
                 self.node.left = old_child
+                old_child.parent = self.node
             else:
                 self.parent.left = self.node
                 self.node.parent = self.parent
@@ -277,6 +278,7 @@ class Insert(TreeAction):
                 self.parent.replace_child(old_child, self.node)
                 self.node.parent = self.parent
                 self.node.right = old_child
+                old_child.parent = self.node
             else:
                 self.parent.right = self.node
                 self.node.parent = self.parent
@@ -297,6 +299,7 @@ class Insert(TreeAction):
             if self.node.has_left_child():
                 old_child = self.node.left
                 self.parent.replace_child(self.node, old_child)
+                old_child.parent = self.parent
                 self.node.parent = None
                 self.node.left = None
             else:
@@ -306,6 +309,7 @@ class Insert(TreeAction):
             if self.node.has_right_child():
                 old_child = self.node.right
                 self.parent.replace_child(self.node, old_child)
+                old_child.parent = self.parent
                 self.node.parent = None
                 self.node.right = None
             else:

@@ -15,6 +15,6 @@ class TestSimulatedAnnealing(TestCase):
 
         totalArea = 100*100*20
 
-        sa.sa(totalArea, 10, 2, 0.05, 0.1)
+        sa.sa(totalArea, 10, 10, 0.99, 0.01)
 
 
