@@ -17,7 +17,6 @@ class TestSimulatedAnnealing(TestCase):
         totalArea = 100*100*20
 
         best = sa.sa(totalArea, 10, 10, 0.995, 0.0001)
-        best.calc_area()
 
         best.print()
         fp = Floorplan(best)
@@ -32,8 +31,7 @@ class TestSimulatedAnnealing(TestCase):
 
         totalArea = sum([i*8*i*6 for i in range(20)])
 
-        best = sa.sa(totalArea, 10, 10, 0.995, 0.0001)
-        area = best.calc_area()
+        best = sa.sa(totalArea, 100, 10, 0.995, 0.0001)
 
         print(f"Area = {area}")
 
