@@ -17,6 +17,9 @@ class TestFloorplan(TestCase):
         print('T after construction')
         t.print()
 
+        t.remove(random.choice(t.nodes))
+        t.revertLast()
+
         t.calc_area()
 
         fp = Floorplan(t)

@@ -14,13 +14,9 @@ from data.Tree import Tree
 
 
 class Floorplan:
-    def __init__(self, arg):
-        if isinstance(arg, list):
-            self.tree = None
-            self.modules: List[Module] = arg
-        elif isinstance(arg, Tree):
-            self.tree = arg
-            self.modules: List[Module] = [x.value for x in self.tree.root.nodes_in_subtree()]
+    def __init__(self, tree : Tree):
+        self.tree = tree
+        self.modules: List[Module] = [x.value for x in self.tree.root.nodes_in_subtree()]
 
     def max_dimension(self) -> Dimensions:
         max_x, max_y = 0, 0
@@ -36,26 +32,29 @@ class Floorplan:
         fig = plt.figure()
         ax = fig.add_subplot(111, aspect='equal')
         patches = []
-        for i, m in enumerate(self.modules):
-            r = Rectangle(m.position.to_tuple(), m.dimensions.width, m.dimensions.height)
+        for i, n in enumerate(self.tree.nodes):
+            m = n.value
+            if n.rotated:
+                r = Rectangle(m.position.to_tuple(), m.dimensions.height, m.dimensions.width)
+            else:
+                r = Rectangle(m.position.to_tuple(), m.dimensions.width, m.dimensions.height)
             patches.append(r)
 
             if draw_names:
                 ax.annotate(m.name, m.position + 0.5 * m.dimensions.to_vector(), color='w', weight='bold',
                             fontsize=name_size, ha='center', va='center')
 
-        if self.tree:
-            if draw_contour:
-                contour = self.tree.hor_cont
-                contour_x = [p.x for p in list(contour)[:-1]]
-                contour_y = [p.y for p in list(contour)[:-1]]
-                plt.plot(contour_x, contour_y, contour_style, linewidth=contour_width)
+        if draw_contour:
+            contour = self.tree.hor_cont
+            contour_x = [p.x for p in list(contour)[:-1]]
+            contour_y = [p.y for p in list(contour)[:-1]]
+            plt.plot(contour_x, contour_y, contour_style, linewidth=contour_width)
 
-            if draw_tree:
-                network, positions = self.tree.to_networkx()
-                nx.draw_networkx(network, positions, arrows=True,
-                                 edge_color=tree_edge_color, node_color=tree_node_color,
-                                 node_size=tree_node_size, linewidths=tree_line_width)
+        if draw_tree:
+            network, positions = self.tree.to_networkx()
+            nx.draw_networkx(network, positions, arrows=True,
+                             edge_color=tree_edge_color, node_color=tree_node_color,
+                             node_size=tree_node_size, linewidths=tree_line_width)
 
 
         md = self.max_dimension()

@@ -289,5 +289,5 @@ class TestTree(TestCase):
 
         t.calc_area()
 
-        fp = Floorplan(modules)
+        fp = Floorplan(t)
         fp.plot()
