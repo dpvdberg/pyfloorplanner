@@ -138,8 +138,7 @@ class Tree:
                 node_width = dimensions.width
                 node_height = dimensions.height
 
-            self.hor_cont.insert_intervals([Vector2(0, node_height), Vector2(node_width, node_height),
-                                           Vector2(node_width, 0)], 0, node_width)
+            self.hor_cont.insert(0, node_width, node_height)
             return
 
         parent = n.parent
@@ -159,8 +158,5 @@ class Tree:
             node_width = dimensions.width
             node_height = dimensions.height
 
-        y = self.hor_cont.get_max_interval(Interval(x, x + node_width))
+        y = self.hor_cont.insert(x, x + node_width, node_height)
         n.value.position = Vector2(x, y)
-
-        self.hor_cont.insert_intervals([Vector2(x, y + node_height), Vector2(x + node_width, y + node_height),
-                                       Vector2(x + node_width, y)], x, x + node_width)

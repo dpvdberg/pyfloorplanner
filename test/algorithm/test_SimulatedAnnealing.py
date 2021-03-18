@@ -20,7 +20,8 @@ class TestSimulatedAnnealing(TestCase):
 
         best.print()
         fp = Floorplan(best)
-        fp.plot(draw_tree=True)
+        best.calc_area()
+        fp.plot(draw_tree=True, draw_contour=True)
 
     def test_sa2(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(i*8, i*6), Vector2(0, 0)) for i in range(1, 20)]

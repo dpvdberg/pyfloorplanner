@@ -24,7 +24,7 @@ class Floorplan:
     def plot(self, fig=None, highlight_empty_space=False, draw_names=False, name_size=6,
              draw_tree=False, tree_edge_color='k', tree_node_color='#1f78b4', tree_node_size=150,
              tree_label_font_size=10, tree_line_width=1.0,
-             draw_contour=False, contour_style='r', contour_width=3):
+             draw_contour=False, draw_contour_marker=True, contour_marker_color='cyan', contour_style='r', contour_width=3):
         if fig is None:
             f = plt.figure()
             ax = f.add_subplot(111)
@@ -52,7 +52,8 @@ class Floorplan:
             contour = self.tree.hor_cont
             contour_x = [p.x for p in list(contour)[:-1]]
             contour_y = [p.y for p in list(contour)[:-1]]
-            plt.plot(contour_x, contour_y, contour_style, linewidth=contour_width)
+            plt.plot(contour_x, contour_y, contour_style, linewidth=contour_width,
+                     marker=('o' if draw_contour_marker else ''), markerfacecolor=contour_marker_color)
 
         if draw_tree:
             network, positions = self.tree.to_networkx()
@@ -66,8 +67,8 @@ class Floorplan:
             plt.xlim([0, md.width])
             plt.ylim([0, md.height])
         else:
-            plt.xlim([-contour_width, md.width + contour_width])
-            plt.ylim([-contour_width, md.height + contour_width])
+            plt.xlim([-2*contour_width, md.width + 2*contour_width])
+            plt.ylim([-2*contour_width, md.height + 2*contour_width])
 
         pc = PatchCollection(patches, edgecolor='black')
 

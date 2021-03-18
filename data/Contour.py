@@ -19,68 +19,111 @@ class Contour:
     def get_max_x(self):
         return self.max_x
 
-    def get_max_interval(self, interval: Interval):
-        left = True
-        max_value = 0
-        for p in iter(self.intervals):
-            if p.x < interval.min:
-                continue
-            elif left:
-                left = False
-                continue
-            if p.x >= interval.max:
-                if p.y > max_value:
-                    max_value = p.y
-                return max_value
-            else:
-                if p.y > max_value:
-                    max_value = p.y
-
-    def insert_intervals(self, intervals : List[Vector2], x_min, x_max):
+    def insert(self, x_min, x_max, height) -> float:
+        '''
+        Insert a new node between [x_min, x_max] of specified height.
+        Returns the original maximum height in [x_min, x_max].
+        :param x_min: Left interval
+        :param x_max: Right interval
+        :param height: Height of node to insert
+        :return: Maximum value of the contour between [x_min, x_max] before insertion
+        '''
         i = 0
-        left = True
+
         start_index = 0
+        max_y = 0
+
+        # y value of the first occurrence of x_min
+        left_y = None
+        # y value of the last occurrence of x_max
+        right_y = None
+
+        # y value of previous iteration (for small optimization)
+        prev_y = 0
+
+        missing_left = False
+
         for p in iter(self.intervals):
             if p.x < x_min:
+                ###
+                # We are left of the specified interval
+                ###
                 i = i + 1
+
+                prev_y = p.y
                 continue
-            elif left:
-                left = False
-                i = i + 1
-                # Prevent removal of point with x == x_min
+
+            if p.x > x_max:
+                # We are past the interval, process and return
+
+                if left_y is None and right_y is None:
+                    # We skipped over the entire interval, set values
+                    missing_left = True
+                    left_y = prev_y
+                    start_index = i - 1
+                    new_y = prev_y + height
+                    max_y = max(max_y, prev_y)
+                else:
+                    # compute height of contour y in (min_x, max_x) interval
+                    new_y = max_y + height
+
+                left_flat = new_y == left_y
+                right_flat = new_y == right_y
+
+                new_contour = blist()
+
+                if left_flat:
+                    new_contour.extend(self.intervals[:start_index])
+                else:
+                    new_contour.extend(self.intervals[:(start_index + 1)])
+                    if missing_left:
+                        new_contour.append(Vector2(x_min, left_y))
+                    new_contour.append(Vector2(x_min, new_y))
+
+                if right_flat:
+                    new_contour.extend(self.intervals[i:])
+                else:
+                    new_contour.append(Vector2(x_max, new_y))
+                    if right_y is None:
+                        # We have no point to drop to, create one
+                        new_contour.append(Vector2(x_max, prev_y))
+                        new_contour.extend(self.intervals[i:])
+                    else:
+                        new_contour.extend(self.intervals[(i - 1):])
+
+                self.intervals = new_contour
+
+                self.max_x = max(x_max, self.max_x)
+                self.max_y = max(new_y, self.max_y)
+
+                return max_y
+
+            # We are in [x_min, x_max]
+            if left_y is None and p.x == x_min:
+                # The first occurrence of x_min
+                left_y = p.y
                 start_index = i
-                continue
-            if p.x >= x_max:
-                if self.intervals[start_index-1].x is intervals[0].x and self.intervals[start_index-1].y is intervals[0].y:
-                    new_intervals: blist = self.intervals[0:start_index-1]
-                else:
-                    new_intervals: blist = self.intervals[0:start_index]
-                for insert_interval in intervals:
-                    # update maximum x and y values if necessary
-                    if insert_interval.y > self.max_y:
-                        self.max_y = insert_interval.y
-                    if insert_interval.x > self.max_x:
-                        self.max_x = insert_interval.x
-
-                if self.intervals[i].x is intervals[-1].x and self.intervals[i].y is intervals[-1].y:
-                    # if intervals[-1].y <= self.intervals[i + 1].y and intervals[-1].y != 0:
-                    #     new_intervals.extend(intervals[:-1])
-                    # else:
-                    new_intervals.extend(intervals)
-
-                    new_intervals.extend(self.intervals[i+1:])
-                else:
-                    # if intervals[-1].y <= self.intervals[i].y and intervals[-1].y != 0:
-                    #     new_intervals.extend(intervals[:-1])
-                    # else:
-                    new_intervals.extend(intervals)
-
-                    new_intervals.extend(self.intervals[i:])
-
-                self.intervals = new_intervals
-                break
-            else:
                 i = i + 1
+                continue
+
+            if left_y is None and p.x > x_min:
+                # There was no point with equal x to x_min
+                missing_left = True
+                max_y = max(max_y, p.y)
+                left_y = prev_y
+                start_index = i - 1
+
+            if p.x == x_max:
+                # The last occurrence of x_max
+                if right_y is not None:
+                    max_y = max(max_y, prev_y)
+                right_y = p.y
+                i = i + 1
+                continue
+
+            prev_y = p.y
+            max_y = max(max_y, p.y)
+            i = i + 1
 
     def __iter__(self):
         return iter(self.intervals)
