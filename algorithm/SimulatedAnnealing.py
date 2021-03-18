@@ -46,8 +46,8 @@ class SimulatedAnnealing:
 
                     # If the operation generated a better area, keep this as our current solution
                     if new_cost <= current_cost:
-                        current_cost = new_cost
                         current_area = new_area
+                        current_cost = new_cost
 
                     else:
                         # Else, keep the solution with probability p
@@ -64,8 +64,7 @@ class SimulatedAnnealing:
                     best_area = current_cost*norm_area
 
                     if plot:
-                        best_tree.calc_area()
-                        Floorplan(best_tree).plot(fig=fig, draw_tree=True)
+                        Floorplan(self.tree).plot(fig=fig, draw_tree=True)
 
             # After iterations, reduce temp and continue
             temp = r * temp
