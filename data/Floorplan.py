@@ -21,10 +21,10 @@ class Floorplan:
     def max_dimension(self) -> Dimensions:
         return Dimensions(self.tree.hor_cont.get_max_x(), self.tree.hor_cont.get_max_y())
 
-    def plot(self, fig=None, highlight_empty_space=False, draw_names=False, name_size=6,
-             draw_tree=False, tree_edge_color='k', tree_node_color='#1f78b4', tree_node_size=150,
-             tree_label_font_size=10, tree_line_width=1.0,
-             draw_contour=False, draw_contour_marker=True, contour_marker_color='cyan', contour_style='r', contour_width=3):
+    def plot(self, fig=None, highlight_empty_space=False, draw_names=False, name_size=6, draw_tree=False,
+             tree_edge_color='k', tree_node_color='#1f78b4', tree_node_size=150, tree_label_font_size=10,
+             tree_line_width=1.0, draw_contour=False, draw_contour_marker=True, contour_marker_color='cyan',
+             contour_style='r', contour_width=3):
         if fig is None:
             f = plt.figure()
             ax = f.add_subplot(111)
@@ -67,8 +67,8 @@ class Floorplan:
             plt.xlim([0, md.width])
             plt.ylim([0, md.height])
         else:
-            plt.xlim([-2*contour_width, md.width + 2*contour_width])
-            plt.ylim([-2*contour_width, md.height + 2*contour_width])
+            plt.xlim([-2 * contour_width, md.width + 2 * contour_width])
+            plt.ylim([-2 * contour_width, md.height + 2 * contour_width])
 
         pc = PatchCollection(patches, edgecolor='black')
 
