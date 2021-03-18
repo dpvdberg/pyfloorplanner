@@ -11,8 +11,4 @@ modules = y.parse(open('datasets/MCNC/ami33.yal', 'r').read())
 sa = SimulatedAnnealing(modules)
 totalArea = sum(i.dimensions.width*i.dimensions.height for i in modules)
 
-best = sa.sa(totalArea, 10, 2, 0.99, 0.0001)
-
-fp = Floorplan(best)
-
-fp.plot(draw_tree=True, draw_contour=True, tree_label_font_size=6)
+best = sa.sa(totalArea, 40, 2, 0.99, 0.0001, plot=True)

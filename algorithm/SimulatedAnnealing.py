@@ -3,9 +3,11 @@ import random
 from typing import List
 
 from data.Contour import Contour
+from data.Floorplan import Floorplan
 from data.Module import Module
 from data.Tree import Tree
 from data.TreeBuilder import TreeBuilder
+from matplotlib import pyplot as plt
 
 
 class SimulatedAnnealing:
@@ -13,7 +15,7 @@ class SimulatedAnnealing:
         self.tree = TreeBuilder.random_tree(modules, seed=seed)
         random.seed(seed)
 
-    def sa(self, t: int, iterations: int, initial_temp: float, r: float, temp_t: float):
+    def sa(self, t: int, iterations: int, initial_temp: float, r: float, temp_t: float, plot=False):
         # TODO: removeSoft is not supported
         operations = [self.tree.rotate, self.tree.move, self.tree.swap]
 
@@ -24,6 +26,11 @@ class SimulatedAnnealing:
         best_area = current_cost*norm_area
 
         temp = initial_temp
+
+        fig = None
+        if plot:
+            fig = plt.figure()
+            fig.show()
 
         # Loop until threshold is met
         while self.tree.calc_area() >= t and temp >= temp_t:
@@ -52,6 +59,10 @@ class SimulatedAnnealing:
                 if current_cost*norm_area < best_area:
                     best_tree = self.tree.clone()
                     best_area = current_cost*norm_area
+
+                    if plot:
+                        best_tree.calc_area()
+                        Floorplan(best_tree).plot(fig=fig, draw_tree=True)
 
             # After iterations, reduce temp and continue
             temp = r * temp

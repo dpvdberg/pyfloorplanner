@@ -16,7 +16,7 @@ class TestSimulatedAnnealing(TestCase):
 
         totalArea = 100*100*20
 
-        best = sa.sa(totalArea, 10, 10, 0.995, 0.0001)
+        best = sa.sa(totalArea, 10, 10, 0.995, 0.0001, plot=True)
 
         best.print()
         fp = Floorplan(best)
@@ -31,7 +31,7 @@ class TestSimulatedAnnealing(TestCase):
 
         totalArea = sum([i*8*i*6 for i in range(20)])
 
-        best = sa.sa(totalArea, 50, 10, 0.995, 0.0001)
+        best = sa.sa(totalArea, 50, 10, 0.995, 0.0001, plot=True)
 
         best.print()
         fp = Floorplan(best)
