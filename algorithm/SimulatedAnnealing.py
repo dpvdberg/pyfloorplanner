@@ -15,7 +15,7 @@ class SimulatedAnnealing:
         self.tree = TreeBuilder.random_tree(modules, seed=seed)
         random.seed(seed)
 
-    def sa(self, t: int, iterations: int, initial_temp: float, r: float, temp_t: float, plot=False):
+    def sa(self, t: int, iterations: int, initial_temp: float, r: float, temp_t: float, plot_intermediate=False):
         # TODO: removeSoft is not supported
         operations = [self.tree.rotate, self.tree.move, self.tree.swap]
 
@@ -29,7 +29,7 @@ class SimulatedAnnealing:
         temp = initial_temp
 
         fig = None
-        if plot:
+        if plot_intermediate:
             fig = plt.figure()
             fig.show()
 
@@ -63,7 +63,7 @@ class SimulatedAnnealing:
                     best_tree = self.tree.clone()
                     best_area = current_cost*norm_area
 
-                    if plot:
+                    if plot_intermediate:
                         Floorplan(self.tree).plot(fig=fig, draw_tree=True)
 
             # After iterations, reduce temp and continue

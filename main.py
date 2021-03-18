@@ -11,4 +11,4 @@ modules = y.parse(open('datasets/MCNC/ami33.yal', 'r').read())
 sa = SimulatedAnnealing(modules)
 totalArea = sum(i.dimensions.width*i.dimensions.height for i in modules)
 
-best = sa.sa(totalArea, 40, 2, 0.99, 0.0001, plot=True)
+best = sa.sa(totalArea, 40, 2, 0.99, 0.0001, plot_intermediate=True)
