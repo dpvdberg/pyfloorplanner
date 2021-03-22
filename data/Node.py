@@ -87,6 +87,10 @@ class Node:
         :param new: New child
         :return: Whether the old child was on the right
         '''
+        #print(self.id)
+        #print(self.left)
+        #print(self.right)
+        #print(old)
         if self.left is old:
             self.left = new
             return False

@@ -120,6 +120,7 @@ class Remove(TreeAction):
         if self.node.has_two_children():
             # Move children up until we reach the bottom of the tree
             current_node = self.node
+            #print(self.tree.to_text())
 
             # Determine whether to move left or right node up
             propagate_right = True if random() > 0.5 else False
@@ -139,6 +140,8 @@ class Remove(TreeAction):
             # update parent
             replace_node.parent = current_node.parent
 
+            # dangling_node.parent = replace_node
+
             # Store propagation order of the first child
             self.propagation_order.put(propagate_right)
 
@@ -147,28 +150,39 @@ class Remove(TreeAction):
             # log.debug("After initial replacement:")
             # log.debug(DeferredMessage(self.tree.to_text))
 
+
             # Propagate down in random order
+            #while dangling_node is not None:
             while dangling_node is not None:
+                last_propagate = propagate_right
                 propagate_right = True if random() > 0.5 else False
                 self.propagation_order.put(propagate_right)
 
-                new_dangling_node = current_node.right if propagate_right else current_node.left
-
-                if propagate_right:
-                    current_node.right = dangling_node
+                if current_node.has_two_children():
+                    replace_node = current_node.right if propagate_right else current_node.left
+                    new_dangling_node = current_node.left if propagate_right else current_node.right
                 else:
+                    replace_node = current_node.right if current_node.has_right_child() else current_node.left
+                    new_dangling_node = None
+
+                if last_propagate:
+                    current_node.right = replace_node
                     current_node.left = dangling_node
+                else:
+                    current_node.left = replace_node
+                    current_node.right = dangling_node
 
-                dangling_node.parent = current_node
+                #replace_node.parent = current_node
+                if dangling_node is not None:
+                    dangling_node.parent = current_node
 
-                current_node = dangling_node
+                current_node = replace_node
                 dangling_node = new_dangling_node
 
                 # log.debug("After propagate:")
                 # log.debug(DeferredMessage(self.tree.to_text))
+            #print(self.tree.to_text())
 
-            # log.debug("Propagation order:")
-            # log.debug(DeferredMessage(lambda: str(list(self.propagation_order.queue))))
         else:
             new_child = self.node.get_first_child()
             # Node has one child or no child, replace

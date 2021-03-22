@@ -1,7 +1,7 @@
 import random
 from typing import List
 
-from data.Module import Module
+from data.Module import Module, ModuleType
 from data.Tree import Tree
 from data.Node import Node, reset_node_id
 
@@ -41,5 +41,21 @@ class TreeBuilder:
             placement_node.parent = parent
 
             free_places.extend([(placement_node, True), (placement_node, False)])
+
+        return Tree(root, nodes)
+
+    @staticmethod
+    def notrandom_tree(modules: List[Module]) -> Tree:
+
+        nodes = [Node(m) for m in modules]
+
+        for i in range(len(modules)):
+            nodes[i].id = i
+            nodes[i].parent = nodes[int((i+1)/2-1)]
+            nodes[i].left = nodes[2 * i+1] if 2 * i + 1 < len(modules) else None
+            nodes[i].right = nodes[2 * i+2] if 2 * i + 2 < len(modules) else None
+
+        nodes[0].parent = None
+        root = nodes[0]
 
         return Tree(root, nodes)

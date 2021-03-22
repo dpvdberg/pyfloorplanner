@@ -38,7 +38,9 @@ class Tree:
 
     def move(self):
         node = random.choice(self.nodes)
+        # node = self.nodes[1]
         parent = random.choice(self.nodes + [None])
+        # parent = self.nodes[34]
         while parent is node:
             parent = random.choice(self.nodes + [None])
 
@@ -48,6 +50,8 @@ class Tree:
     def swap(self):
         first = random.choice(self.nodes)
         second = random.choice(self.nodes)
+        while second is first:
+            second = random.choice(self.nodes)
         self.apply(Swap(self, first, second))
 
     def remove_soft(self):
