@@ -13,7 +13,7 @@ modules = [module for module in modules if module.module_type is not ModuleType.
 sa = SimulatedAnnealing(modules)
 totalArea = sum(i.dimensions.width*i.dimensions.height for i in modules)
 
-best = sa.sa(totalArea, 400, 1, 0.9, 0.1, plot_intermediate=True)
+best = sa.sa(400, 1, 0.9, totalArea, 0.1)
 
 best.print()
 fp = Floorplan(best)

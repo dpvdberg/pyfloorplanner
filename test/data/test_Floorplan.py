@@ -18,7 +18,7 @@ def repeat(times):
 
 
 class TestFloorplan(TestCase):
-    def test_plot(self, seed=2):
+    def test_plot(self, seed=3):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(10)]
         t = TreeBuilder.random_tree(modules, seed=seed)
 

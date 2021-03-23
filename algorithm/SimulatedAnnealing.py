@@ -17,7 +17,7 @@ class SimulatedAnnealing:
         #self.tree = TreeBuilder.notrandom_tree(modules)
         random.seed(seed)
 
-    def sa(self, t: int, iterations: int, initial_temp: float, r: float, temp_t: float, plot_intermediate=False):
+    def sa(self, iterations: int, initial_temp: float, stop_temp: float, stop_area: int, plot_intermediate=False):
         # TODO: removeSoft is not supported
         operations = [self.tree.rotate, self.tree.move, self.tree.swap]
 
@@ -43,7 +43,7 @@ class SimulatedAnnealing:
             fig.show()
 
         # Loop until threshold is met
-        while current_area >= t and actual_temp >= temp_t:
+        while current_area >= stop_area and actual_temp >= stop_temp:
             # print("New loop!")
             count += 1
             deltas = []
@@ -106,9 +106,9 @@ class SimulatedAnnealing:
 
             print(actual_temp)
 
-        if actual_temp < temp_t:
+        if actual_temp < stop_temp:
             print("Stopped due to temperature")
-        if self.tree.calc_area() < t:
+        if self.tree.calc_area() < stop_area:
             print("Stopped due to tree")
 
         best_tree.calc_area()
