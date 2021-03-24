@@ -26,7 +26,7 @@ class TestTree(TestCase):
         logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
 
         t.remove(n)
-        t.revertLast()
+        t.revert_last()
 
     def test_remove_revert(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
@@ -39,7 +39,7 @@ class TestTree(TestCase):
         logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
 
         t.remove(n)
-        t.revertLast()
+        t.revert_last()
 
     def test_remove_one_child(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
@@ -64,7 +64,7 @@ class TestTree(TestCase):
         logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
 
         t.remove(n)
-        t.revertLast()
+        t.revert_last()
 
     def test_remove_no_child(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
@@ -89,7 +89,7 @@ class TestTree(TestCase):
         logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
 
         t.remove(n)
-        t.revertLast()
+        t.revert_last()
 
     def test_remove_root(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
@@ -114,7 +114,7 @@ class TestTree(TestCase):
         logging.getLogger("pyfloorplanner").setLevel(logging.DEBUG)
 
         t.remove(n)
-        t.revertLast()
+        t.revert_last()
 
     def test_insert(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]
@@ -196,7 +196,7 @@ class TestTree(TestCase):
         v = next(x for x in t.nodes if x.id == 15)
 
         t.apply(Swap(t, u, v))
-        t.revertLast()
+        t.revert_last()
 
     def test_swap_root(self):
         modules = [Module(str(i), ModuleType.HARD, Dimensions(100, 100), Vector2(0, 0)) for i in range(20)]

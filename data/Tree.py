@@ -22,7 +22,7 @@ class Tree:
 
         self.hor_cont = Contour()
 
-        self.lastAction = TreeAction(self)
+        self.last_action = TreeAction(self)
 
     def validate_parents(self) -> bool:
         return self.root.validate_parents()
@@ -63,13 +63,13 @@ class Tree:
     def insert(self, node, parent, insertLeft):
         self.apply(Insert(self, node, parent, insertLeft))
 
-    def revertLast(self):
-        log.debug(f"Before revert: {self.lastAction.__class__.__name__}")
+    def revert_last(self):
+        log.debug(f"Before revert: {self.last_action.__class__.__name__}")
         log.debug(DeferredMessage(self.to_text))
 
-        self.lastAction.revert()
+        self.last_action.revert()
 
-        log.debug(f"After revert: {self.lastAction.__class__.__name__}")
+        log.debug(f"After revert: {self.last_action.__class__.__name__}")
         log.debug(DeferredMessage(self.to_text))
 
     # Calculate the area of the floorplan that belongs to the current tree
@@ -85,7 +85,7 @@ class Tree:
         return True
 
     def apply(self, action: TreeAction):
-        self.lastAction = action
+        self.last_action = action
 
         log.debug(f"Before action: {action.__class__.__name__}")
         log.debug(DeferredMessage(self.to_text))

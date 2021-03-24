@@ -45,7 +45,7 @@ class TreeBuilder:
         return Tree(root, nodes)
 
     @staticmethod
-    def notrandom_tree(modules: List[Module]) -> Tree:
+    def balanced_tree(modules: List[Module]) -> Tree:
 
         nodes = [Node(m) for m in modules]
 

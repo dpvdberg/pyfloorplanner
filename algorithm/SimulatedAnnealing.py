@@ -12,9 +12,11 @@ import statistics
 
 
 class SimulatedAnnealing:
-    def __init__(self, modules: List[Module], seed=None):
-        self.tree = TreeBuilder.random_tree(modules, seed=seed)
-        #self.tree = TreeBuilder.notrandom_tree(modules)
+    def __init__(self, modules: List[Module], seed=None, random_initial_tree=True):
+        if random_initial_tree:
+            self.tree = TreeBuilder.random_tree(modules, seed=seed)
+        else:
+            self.tree = TreeBuilder.balanced_tree(modules)
         random.seed(seed)
 
     def sa(self, iterations: int, initial_temp: float, stop_temp: float, stop_area: int, plot_intermediate=False):
@@ -92,17 +94,17 @@ class SimulatedAnnealing:
 
             # After iterations, reduce temp and continue
             std_var = statistics.stdev(deltas)
-            ratio = math.e ** (1.3 * temp / std_var)
+            ratio = math.exp(1.3 * temp / std_var)
             temp = ratio * temp
             # print(temp)
 
             if count == 7:
                 temp = estimate_avg / math.log(0.9)
                 temp *= pow(0.9, 7)
-                actual_temp = math.e ** (estimate_avg / temp)
+                actual_temp = math.exp(estimate_avg / temp)
 
             if count > 7:
-                actual_temp = math.e ** (estimate_avg / temp)
+                actual_temp = math.exp(estimate_avg / temp)
 
             print(actual_temp)
 

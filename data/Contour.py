@@ -7,9 +7,9 @@ from data.Common import Interval, Vector2
 
 class Contour:
     def __init__(self):
-        self.intervals = blist()
-        self.intervals.append(Vector2(0, 0))
-        self.intervals.append(Vector2(math.inf, 0))
+        self.points = blist()
+        self.points.append(Vector2(0, 0))
+        self.points.append(Vector2(math.inf, 0))
         self.max_y = 0
         self.max_x = 0
 
@@ -43,7 +43,7 @@ class Contour:
 
         missing_left = False
 
-        for p in iter(self.intervals):
+        for p in iter(self.points):
             if p.x < x_min:
                 ###
                 # We are left of the specified interval
@@ -73,25 +73,25 @@ class Contour:
                 new_contour = blist()
 
                 if left_flat:
-                    new_contour.extend(self.intervals[:start_index])
+                    new_contour.extend(self.points[:start_index])
                 else:
-                    new_contour.extend(self.intervals[:(start_index + 1)])
+                    new_contour.extend(self.points[:(start_index + 1)])
                     if missing_left:
                         new_contour.append(Vector2(x_min, left_y))
                     new_contour.append(Vector2(x_min, new_y))
 
                 if right_flat:
-                    new_contour.extend(self.intervals[i:])
+                    new_contour.extend(self.points[i:])
                 else:
                     new_contour.append(Vector2(x_max, new_y))
                     if right_y is None:
                         # We have no point to drop to, create one
                         new_contour.append(Vector2(x_max, prev_y))
-                        new_contour.extend(self.intervals[i:])
+                        new_contour.extend(self.points[i:])
                     else:
-                        new_contour.extend(self.intervals[(i - 1):])
+                        new_contour.extend(self.points[(i - 1):])
 
-                self.intervals = new_contour
+                self.points = new_contour
 
                 self.max_x = max(x_max, self.max_x)
                 self.max_y = max(new_y, self.max_y)
@@ -126,4 +126,4 @@ class Contour:
             i = i + 1
 
     def __iter__(self):
-        return iter(self.intervals)
+        return iter(self.points)
