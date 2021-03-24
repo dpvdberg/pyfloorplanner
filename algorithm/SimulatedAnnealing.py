@@ -74,7 +74,7 @@ class SimulatedAnnealing:
 
                     else:
                         # Else, keep the solution with probability p
-                        p = math.e ** (delta / temp)
+                        p = math.exp(delta / temp)
                         #print('delta =  ', delta, 'p = ', p)
                         if random.uniform(0, 1) < p:
                             current_area = new_area
