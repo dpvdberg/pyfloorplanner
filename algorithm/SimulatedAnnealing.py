@@ -1,6 +1,6 @@
 import math
 import random
-from typing import List
+from typing import List, Optional
 
 from data.Contour import Contour
 from data.Floorplan import Floorplan
@@ -9,27 +9,34 @@ from data.Tree import Tree
 from data.TreeBuilder import TreeBuilder
 from matplotlib import pyplot as plt
 import statistics
+import numpy as np
 
 
 class SimulatedAnnealing:
     def __init__(self, modules: List[Module], seed=None, random_initial_tree=True):
+        self.modules = modules
         if random_initial_tree:
             self.tree = TreeBuilder.random_tree(modules, seed=seed)
         else:
             self.tree = TreeBuilder.balanced_tree(modules)
         random.seed(seed)
 
-    def sa(self, iterations: int, initial_temp: float, stop_temp: float, stop_area: int, plot_intermediate=False):
+    def sa(self, iterations: int, initial_temp: float, stop_temp: float, stop_area: Optional[int] = None,
+           plot_intermediate=False):
         # TODO: removeSoft is not supported
+
+        if stop_area is None:
+            stop_area = sum(i.dimensions.width * i.dimensions.height for i in self.modules)
+
         operations = [self.tree.rotate, self.tree.move, self.tree.swap]
 
         current_area = self.tree.calc_area()
         norm_area = self.calc_average_area(self.tree, operations)
-        #norm_area = 1;
-        current_cost = current_area/norm_area
+        # norm_area = 1;
+        current_cost = current_area / norm_area
 
         best_tree = self.tree.clone()
-        best_area = current_cost*norm_area
+        best_area = current_cost * norm_area
 
         itr = iterations * len(self.tree.nodes)
 
@@ -43,6 +50,7 @@ class SimulatedAnnealing:
         if plot_intermediate:
             fig = plt.figure()
             fig.show()
+            plot_order = np.random.random(len(self.modules))
 
         # Loop until threshold is met
         while current_area >= stop_area and actual_temp >= stop_temp:
@@ -58,11 +66,11 @@ class SimulatedAnnealing:
                     self.tree.swap()
                 else:
                     self.tree.move()
-                    #Floorplan(self.tree).plot(fig=fig, draw_tree=True)
+                    # Floorplan(self.tree).plot(fig=fig, draw_tree=True)
 
                 if self.tree.feasible():
                     new_area = self.tree.calc_area()
-                    new_cost = new_area/norm_area
+                    new_cost = new_area / norm_area
 
                     delta = new_cost - current_cost
                     deltas.append(delta)
@@ -75,7 +83,7 @@ class SimulatedAnnealing:
                     else:
                         # Else, keep the solution with probability p
                         p = math.exp(delta / temp)
-                        #print('delta =  ', delta, 'p = ', p)
+                        # print('delta =  ', delta, 'p = ', p)
                         if random.uniform(0, 1) < p:
                             current_area = new_area
                             current_cost = new_cost
@@ -84,13 +92,14 @@ class SimulatedAnnealing:
                             self.tree = save_tree
 
                 # If this operation is the best we have seen so far, save it
-                if current_cost*norm_area < best_area:
+                if current_cost * norm_area < best_area:
                     best_tree = self.tree.clone()
-                    best_area = current_cost*norm_area
-                    print(best_area)
+                    best_area = current_cost * norm_area
+                    print("best area:", best_area)
 
                     if plot_intermediate:
-                        Floorplan(self.tree).plot(fig=fig, draw_tree=True)
+                        Floorplan(self.tree).plot(fig=fig, draw_tree=True, draw_contour=True, tree_node_size=100,
+                                                  plot_order=plot_order)
 
             # After iterations, reduce temp and continue
             std_var = statistics.stdev(deltas)
@@ -106,7 +115,7 @@ class SimulatedAnnealing:
             if count > 7:
                 actual_temp = math.exp(estimate_avg / temp)
 
-            print(actual_temp)
+            print("temp:", actual_temp)
 
         if actual_temp < stop_temp:
             print("Stopped due to temperature")
@@ -118,8 +127,7 @@ class SimulatedAnnealing:
 
     def calc_average_area(self, tree, operations):
         sum = 0
-        for i in range(0,10):
+        for i in range(0, 10):
             random.choice(operations)()
             sum += tree.calc_area()
-        return sum/10
-
+        return sum / 10

@@ -24,7 +24,7 @@ class Floorplan:
     def plot(self, fig=None, highlight_empty_space=False, draw_names=False, name_size=6, draw_tree=False,
              tree_edge_color='k', tree_node_color='#1f78b4', tree_node_size=150, tree_label_font_size=10,
              tree_line_width=1.0, draw_contour=False, draw_contour_marker=True, contour_marker_color='cyan',
-             contour_style='r', contour_width=3):
+             contour_style='r', contour_width=3, plot_order=None):
         if fig is None:
             f = plt.figure()
             ax = f.add_subplot(111)
@@ -77,7 +77,9 @@ class Floorplan:
         else:
             pc.set_cmap(cm.get_cmap('viridis'))
             # assign random values for cmap coloring
-            pc.set_array(np.random.random(len(self.modules)))
+            if plot_order is None:
+                plot_order = np.random.random(len(self.modules))
+            pc.set_array(plot_order)
 
         ax.add_collection(pc)
 
